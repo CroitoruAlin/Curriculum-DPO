@@ -1,0 +1,70 @@
+Fri Mar 28 16:09:59 2025       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 570.86.15              Driver Version: 570.86.15      CUDA Version: 12.8     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA H100 80GB HBM3          Off |   00000000:0A:00.0 Off |                    0 |
+| N/A   35C    P0             71W /  700W |       4MiB /  81559MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   1  NVIDIA H100 80GB HBM3          Off |   00000000:18:00.0 Off |                    0 |
+| N/A   30C    P0             72W /  700W |       4MiB /  81559MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   2  NVIDIA H100 80GB HBM3          Off |   00000000:3B:00.0 Off |                    0 |
+| N/A   29C    P0             70W /  700W |       4MiB /  81559MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   3  NVIDIA H100 80GB HBM3          Off |   00000000:44:00.0 Off |                    0 |
+| N/A   36C    P0             73W /  700W |       4MiB /  81559MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   4  NVIDIA H100 80GB HBM3          Off |   00000000:87:00.0 Off |                    0 |
+| N/A   44C    P0            127W /  700W |     816MiB /  81559MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   5  NVIDIA H100 80GB HBM3          Off |   00000000:90:00.0 Off |                    0 |
+| N/A   29C    P0             68W /  700W |       4MiB /  81559MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   6  NVIDIA H100 80GB HBM3          Off |   00000000:B9:00.0 Off |                    0 |
+| N/A   36C    P0            123W /  700W |   38452MiB /  81559MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   7  NVIDIA H100 80GB HBM3          Off |   00000000:C3:00.0 Off |                    0 |
+| N/A   35C    P0             72W /  700W |       4MiB /  81559MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|    4   N/A  N/A          635664      C   ...me/fmi0/miniconda3/bin/python        806MiB |
+|    6   N/A  N/A         1796021      C   /usr/bin/python                       38442MiB |
++-----------------------------------------------------------------------------------------+
+no change     /mnt/home/fmi2/miniconda3/condabin/conda
+no change     /mnt/home/fmi2/miniconda3/bin/conda
+no change     /mnt/home/fmi2/miniconda3/bin/conda-env
+no change     /mnt/home/fmi2/miniconda3/bin/activate
+no change     /mnt/home/fmi2/miniconda3/bin/deactivate
+no change     /mnt/home/fmi2/miniconda3/etc/profile.d/conda.sh
+no change     /mnt/home/fmi2/miniconda3/etc/fish/conf.d/conda.fish
+no change     /mnt/home/fmi2/miniconda3/shell/condabin/Conda.psm1
+no change     /mnt/home/fmi2/miniconda3/shell/condabin/conda-hook.ps1
+no change     /mnt/home/fmi2/miniconda3/lib/python3.12/site-packages/xontrib/conda.xsh
+no change     /mnt/home/fmi2/miniconda3/etc/profile.d/conda.csh
+no change     /mnt/home/fmi2/.bashrc
+No action taken.
+dpo2
+Loading pipeline components...:   0%|          | 0/6 [00:00<?, ?it/s]Loading pipeline components...:  33%|███▎      | 2/6 [00:00<00:00,  6.33it/s]Loading pipeline components...: 100%|██████████| 6/6 [00:00<00:00, 10.90it/s]Loading pipeline components...: 100%|██████████| 6/6 [00:00<00:00, 10.16it/s]
+Number of prompts: 135
+Generating train split: 0 examples [00:00, ? examples/s]
+  0%|          | 0/10 [00:00<?, ?it/s][A
+
+  0%|          | 0/23 [00:00<?, ?it/s][A[A
+Timestep:   0%|          | 0/30 [00:00<?, ?it/s][Aslurmstepd-hpc-nodegpu01: error: *** JOB 258 ON hpc-nodegpu01 CANCELLED AT 2025-03-28T16:11:26 ***
