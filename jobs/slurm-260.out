@@ -1,974 +1,0 @@
-Fri Mar 28 16:34:52 2025       
-+-----------------------------------------------------------------------------------------+
-| NVIDIA-SMI 570.86.15              Driver Version: 570.86.15      CUDA Version: 12.8     |
-|-----------------------------------------+------------------------+----------------------+
-| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
-| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
-|                                         |                        |               MIG M. |
-|=========================================+========================+======================|
-|   0  NVIDIA H100 80GB HBM3          Off |   00000000:0A:00.0 Off |                    0 |
-| N/A   35C    P0             71W /  700W |       4MiB /  81559MiB |      0%      Default |
-|                                         |                        |             Disabled |
-+-----------------------------------------+------------------------+----------------------+
-|   1  NVIDIA H100 80GB HBM3          Off |   00000000:18:00.0 Off |                    0 |
-| N/A   36C    P0             74W /  700W |       4MiB /  81559MiB |      0%      Default |
-|                                         |                        |             Disabled |
-+-----------------------------------------+------------------------+----------------------+
-|   2  NVIDIA H100 80GB HBM3          Off |   00000000:3B:00.0 Off |                    0 |
-| N/A   30C    P0             70W /  700W |       4MiB /  81559MiB |      0%      Default |
-|                                         |                        |             Disabled |
-+-----------------------------------------+------------------------+----------------------+
-|   3  NVIDIA H100 80GB HBM3          Off |   00000000:44:00.0 Off |                    0 |
-| N/A   46C    P0             75W /  700W |       4MiB /  81559MiB |      0%      Default |
-|                                         |                        |             Disabled |
-+-----------------------------------------+------------------------+----------------------+
-|   4  NVIDIA H100 80GB HBM3          Off |   00000000:87:00.0 Off |                    0 |
-| N/A   44C    P0            127W /  700W |     816MiB /  81559MiB |      0%      Default |
-|                                         |                        |             Disabled |
-+-----------------------------------------+------------------------+----------------------+
-|   5  NVIDIA H100 80GB HBM3          Off |   00000000:90:00.0 Off |                    0 |
-| N/A   29C    P0             68W /  700W |       4MiB /  81559MiB |      0%      Default |
-|                                         |                        |             Disabled |
-+-----------------------------------------+------------------------+----------------------+
-|   6  NVIDIA H100 80GB HBM3          Off |   00000000:B9:00.0 Off |                    0 |
-| N/A   36C    P0            124W /  700W |   38452MiB /  81559MiB |      0%      Default |
-|                                         |                        |             Disabled |
-+-----------------------------------------+------------------------+----------------------+
-|   7  NVIDIA H100 80GB HBM3          Off |   00000000:C3:00.0 Off |                    0 |
-| N/A   35C    P0             72W /  700W |       4MiB /  81559MiB |      0%      Default |
-|                                         |                        |             Disabled |
-+-----------------------------------------+------------------------+----------------------+
-                                                                                         
-+-----------------------------------------------------------------------------------------+
-| Processes:                                                                              |
-|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
-|        ID   ID                                                               Usage      |
-|=========================================================================================|
-|    4   N/A  N/A          635664      C   ...me/fmi0/miniconda3/bin/python        806MiB |
-|    6   N/A  N/A         1796021      C   /usr/bin/python                       38442MiB |
-+-----------------------------------------------------------------------------------------+
-no change     /mnt/home/fmi2/miniconda3/condabin/conda
-no change     /mnt/home/fmi2/miniconda3/bin/conda
-no change     /mnt/home/fmi2/miniconda3/bin/conda-env
-no change     /mnt/home/fmi2/miniconda3/bin/activate
-no change     /mnt/home/fmi2/miniconda3/bin/deactivate
-no change     /mnt/home/fmi2/miniconda3/etc/profile.d/conda.sh
-no change     /mnt/home/fmi2/miniconda3/etc/fish/conf.d/conda.fish
-no change     /mnt/home/fmi2/miniconda3/shell/condabin/Conda.psm1
-no change     /mnt/home/fmi2/miniconda3/shell/condabin/conda-hook.ps1
-no change     /mnt/home/fmi2/miniconda3/lib/python3.12/site-packages/xontrib/conda.xsh
-no change     /mnt/home/fmi2/miniconda3/etc/profile.d/conda.csh
-no change     /mnt/home/fmi2/.bashrc
-No action taken.
-dpo2
-Loading pipeline components...:   0%|          | 0/6 [00:00<?, ?it/s]Loading pipeline components...:  33%|███▎      | 2/6 [00:00<00:00,  6.20it/s]Loading pipeline components...:  50%|█████     | 3/6 [00:00<00:00,  5.48it/s]Loading pipeline components...: 100%|██████████| 6/6 [00:00<00:00, 10.09it/s]
-Number of prompts: 135
-Generating train split: 0 examples [00:00, ? examples/s]
-  0%|          | 0/10 [00:00<?, ?it/s][A
-
-  0%|          | 0/7 [00:00<?, ?it/s][A[A
-Timestep:   0%|          | 0/30 [00:00<?, ?it/s][A
-Timestep:   3%|▎         | 1/30 [00:02<01:19,  2.73s/it][A
-Timestep:   7%|▋         | 2/30 [00:03<00:37,  1.32s/it][A
-Timestep:  10%|█         | 3/30 [00:03<00:23,  1.14it/s][A
-Timestep:  13%|█▎        | 4/30 [00:03<00:17,  1.51it/s][A
-Timestep:  17%|█▋        | 5/30 [00:04<00:13,  1.83it/s][A
-Timestep:  20%|██        | 6/30 [00:04<00:11,  2.09it/s][A
-Timestep:  23%|██▎       | 7/30 [00:04<00:09,  2.31it/s][A
-Timestep:  27%|██▋       | 8/30 [00:05<00:08,  2.47it/s][A
-Timestep:  30%|███       | 9/30 [00:05<00:08,  2.60it/s][A
-Timestep:  33%|███▎      | 10/30 [00:05<00:07,  2.69it/s][A
-Timestep:  37%|███▋      | 11/30 [00:06<00:06,  2.76it/s][A
-Timestep:  40%|████      | 12/30 [00:06<00:06,  2.81it/s][A
-Timestep:  43%|████▎     | 13/30 [00:06<00:05,  2.84it/s][A
-Timestep:  47%|████▋     | 14/30 [00:07<00:05,  2.87it/s][A
-Timestep:  50%|█████     | 15/30 [00:07<00:05,  2.88it/s][A
-Timestep:  53%|█████▎    | 16/30 [00:07<00:04,  2.90it/s][A
-Timestep:  57%|█████▋    | 17/30 [00:08<00:04,  2.91it/s][A
-Timestep:  60%|██████    | 18/30 [00:08<00:04,  2.91it/s][A
-Timestep:  63%|██████▎   | 19/30 [00:08<00:03,  2.92it/s][A
-Timestep:  67%|██████▋   | 20/30 [00:09<00:03,  2.92it/s][A
-Timestep:  70%|███████   | 21/30 [00:09<00:03,  2.92it/s][A
-Timestep:  73%|███████▎  | 22/30 [00:09<00:02,  2.92it/s][A
-Timestep:  77%|███████▋  | 23/30 [00:10<00:02,  2.92it/s][A
-Timestep:  80%|████████  | 24/30 [00:10<00:02,  2.92it/s][A
-Timestep:  83%|████████▎ | 25/30 [00:10<00:01,  2.92it/s][A
-Timestep:  87%|████████▋ | 26/30 [00:11<00:01,  2.92it/s][A
-Timestep:  90%|█████████ | 27/30 [00:11<00:01,  2.92it/s][A
-Timestep:  93%|█████████▎| 28/30 [00:11<00:00,  2.93it/s][A
-Timestep:  97%|█████████▋| 29/30 [00:12<00:00,  2.93it/s][A
-Timestep: 100%|██████████| 30/30 [00:12<00:00,  2.93it/s][A
-                                                         [AGenerating train split: 1 examples [00:14, 14.46s/ examples]Generating train split: 2 examples [00:14,  6.02s/ examples]Generating train split: 4 examples [00:14,  2.31s/ examples]Generating train split: 6 examples [00:14,  1.26s/ examples]Generating train split: 8 examples [00:15,  1.26 examples/s]Generating train split: 10 examples [00:15,  1.86 examples/s]Generating train split: 12 examples [00:15,  2.61 examples/s]Generating train split: 14 examples [00:15,  3.46 examples/s]Generating train split: 16 examples [00:15,  4.44 examples/s]Generating train split: 18 examples [00:16,  5.55 examples/s]Generating train split: 20 examples [00:16,  6.68 examples/s]
-
- 14%|█▍        | 1/7 [00:16<01:37, 16.21s/it][A[A
-Timestep:   0%|          | 0/30 [00:00<?, ?it/s][A
-Timestep:   3%|▎         | 1/30 [00:00<00:09,  2.95it/s][A
-Timestep:   7%|▋         | 2/30 [00:00<00:09,  2.94it/s][A
-Timestep:  10%|█         | 3/30 [00:01<00:09,  2.94it/s][A
-Timestep:  13%|█▎        | 4/30 [00:01<00:08,  2.93it/s][A
-Timestep:  17%|█▋        | 5/30 [00:01<00:08,  2.93it/s][A
-Timestep:  20%|██        | 6/30 [00:02<00:08,  2.93it/s][A
-Timestep:  23%|██▎       | 7/30 [00:02<00:07,  2.93it/s][A
-Timestep:  27%|██▋       | 8/30 [00:02<00:07,  2.93it/s][A
-Timestep:  30%|███       | 9/30 [00:03<00:07,  2.93it/s][A
-Timestep:  33%|███▎      | 10/30 [00:03<00:06,  2.93it/s][A
-Timestep:  37%|███▋      | 11/30 [00:03<00:06,  2.93it/s][A
-Timestep:  40%|████      | 12/30 [00:04<00:06,  2.93it/s][A
-Timestep:  43%|████▎     | 13/30 [00:04<00:05,  2.93it/s][A
-Timestep:  47%|████▋     | 14/30 [00:04<00:05,  2.93it/s][A
-Timestep:  50%|█████     | 15/30 [00:05<00:05,  2.93it/s][A
-Timestep:  53%|█████▎    | 16/30 [00:05<00:04,  2.93it/s][A
-Timestep:  57%|█████▋    | 17/30 [00:05<00:04,  2.93it/s][A
-Timestep:  60%|██████    | 18/30 [00:06<00:04,  2.93it/s][A
-Timestep:  63%|██████▎   | 19/30 [00:06<00:03,  2.93it/s][A
-Timestep:  67%|██████▋   | 20/30 [00:06<00:03,  2.93it/s][A
-Timestep:  70%|███████   | 21/30 [00:07<00:03,  2.93it/s][A
-Timestep:  73%|███████▎  | 22/30 [00:07<00:02,  2.93it/s][A
-Timestep:  77%|███████▋  | 23/30 [00:07<00:02,  2.93it/s][A
-Timestep:  80%|████████  | 24/30 [00:08<00:02,  2.93it/s][A
-Timestep:  83%|████████▎ | 25/30 [00:08<00:01,  2.93it/s][A
-Timestep:  87%|████████▋ | 26/30 [00:08<00:01,  2.93it/s][A
-Timestep:  90%|█████████ | 27/30 [00:09<00:01,  2.93it/s][A
-Timestep:  93%|█████████▎| 28/30 [00:09<00:00,  2.93it/s][A
-Timestep:  97%|█████████▋| 29/30 [00:09<00:00,  2.93it/s][A
-Timestep: 100%|██████████| 30/30 [00:10<00:00,  2.93it/s][A
-                                                         [AGenerating train split: 22 examples [00:28,  1.94s/ examples]Generating train split: 24 examples [00:28,  1.38s/ examples]Generating train split: 26 examples [00:28,  1.01 examples/s]Generating train split: 28 examples [00:28,  1.38 examples/s]Generating train split: 30 examples [00:28,  1.89 examples/s]Generating train split: 32 examples [00:29,  2.51 examples/s]Generating train split: 34 examples [00:29,  3.25 examples/s]Generating train split: 36 examples [00:29,  4.14 examples/s]Generating train split: 38 examples [00:29,  5.08 examples/s]Generating train split: 40 examples [00:29,  6.08 examples/s]
-
- 29%|██▊       | 2/7 [00:29<01:13, 14.71s/it][A[A
-Timestep:   0%|          | 0/30 [00:00<?, ?it/s][A
-Timestep:   3%|▎         | 1/30 [00:00<00:09,  2.94it/s][A
-Timestep:   7%|▋         | 2/30 [00:00<00:09,  2.93it/s][A
-Timestep:  10%|█         | 3/30 [00:01<00:09,  2.93it/s][A
-Timestep:  13%|█▎        | 4/30 [00:01<00:08,  2.93it/s][A
-Timestep:  17%|█▋        | 5/30 [00:01<00:08,  2.93it/s][A
-Timestep:  20%|██        | 6/30 [00:02<00:08,  2.93it/s][A
-Timestep:  23%|██▎       | 7/30 [00:02<00:07,  2.92it/s][A
-Timestep:  27%|██▋       | 8/30 [00:02<00:07,  2.92it/s][A
-Timestep:  30%|███       | 9/30 [00:03<00:07,  2.93it/s][A
-Timestep:  33%|███▎      | 10/30 [00:03<00:06,  2.93it/s][A
-Timestep:  37%|███▋      | 11/30 [00:03<00:06,  2.93it/s][A
-Timestep:  40%|████      | 12/30 [00:04<00:06,  2.92it/s][A
-Timestep:  43%|████▎     | 13/30 [00:04<00:05,  2.92it/s][A
-Timestep:  47%|████▋     | 14/30 [00:04<00:05,  2.93it/s][A
-Timestep:  50%|█████     | 15/30 [00:05<00:05,  2.93it/s][A
-Timestep:  53%|█████▎    | 16/30 [00:05<00:04,  2.93it/s][A
-Timestep:  57%|█████▋    | 17/30 [00:05<00:04,  2.93it/s][A
-Timestep:  60%|██████    | 18/30 [00:06<00:04,  2.93it/s][A
-Timestep:  63%|██████▎   | 19/30 [00:06<00:03,  2.93it/s][A
-Timestep:  67%|██████▋   | 20/30 [00:06<00:03,  2.93it/s][A
-Timestep:  70%|███████   | 21/30 [00:07<00:03,  2.93it/s][A
-Timestep:  73%|███████▎  | 22/30 [00:07<00:02,  2.93it/s][A
-Timestep:  77%|███████▋  | 23/30 [00:07<00:02,  2.93it/s][A
-Timestep:  80%|████████  | 24/30 [00:08<00:02,  2.93it/s][A
-Timestep:  83%|████████▎ | 25/30 [00:08<00:01,  2.93it/s][A
-Timestep:  87%|████████▋ | 26/30 [00:08<00:01,  2.93it/s][A
-Timestep:  90%|█████████ | 27/30 [00:09<00:01,  2.93it/s][A
-Timestep:  93%|█████████▎| 28/30 [00:09<00:00,  2.93it/s][A
-Timestep:  97%|█████████▋| 29/30 [00:09<00:00,  2.93it/s][A
-Timestep: 100%|██████████| 30/30 [00:10<00:00,  2.93it/s][A
-                                                         [AGenerating train split: 40 examples [00:40,  6.08 examples/s]Generating train split: 41 examples [00:41,  2.22s/ examples]Generating train split: 43 examples [00:41,  1.51s/ examples]Generating train split: 45 examples [00:42,  1.05s/ examples]Generating train split: 47 examples [00:42,  1.34 examples/s]Generating train split: 49 examples [00:42,  1.85 examples/s]Generating train split: 51 examples [00:42,  2.49 examples/s]Generating train split: 53 examples [00:42,  3.27 examples/s]Generating train split: 55 examples [00:42,  4.14 examples/s]Generating train split: 57 examples [00:43,  5.14 examples/s]Generating train split: 59 examples [00:43,  6.15 examples/s]
-
- 43%|████▎     | 3/7 [00:43<00:56, 14.17s/it][A[A
-Timestep:   0%|          | 0/30 [00:00<?, ?it/s][A
-Timestep:   3%|▎         | 1/30 [00:00<00:09,  2.96it/s][A
-Timestep:   7%|▋         | 2/30 [00:00<00:09,  2.94it/s][A
-Timestep:  10%|█         | 3/30 [00:01<00:09,  2.93it/s][A
-Timestep:  13%|█▎        | 4/30 [00:01<00:08,  2.93it/s][A
-Timestep:  17%|█▋        | 5/30 [00:01<00:08,  2.93it/s][A
-Timestep:  20%|██        | 6/30 [00:02<00:08,  2.93it/s][A
-Timestep:  23%|██▎       | 7/30 [00:02<00:07,  2.93it/s][A
-Timestep:  27%|██▋       | 8/30 [00:02<00:07,  2.93it/s][A
-Timestep:  30%|███       | 9/30 [00:03<00:07,  2.93it/s][A
-Timestep:  33%|███▎      | 10/30 [00:03<00:06,  2.93it/s][A
-Timestep:  37%|███▋      | 11/30 [00:03<00:06,  2.93it/s][A
-Timestep:  40%|████      | 12/30 [00:04<00:06,  2.93it/s][A
-Timestep:  43%|████▎     | 13/30 [00:04<00:05,  2.93it/s][A
-Timestep:  47%|████▋     | 14/30 [00:04<00:05,  2.93it/s][A
-Timestep:  50%|█████     | 15/30 [00:05<00:05,  2.93it/s][A
-Timestep:  53%|█████▎    | 16/30 [00:05<00:04,  2.93it/s][A
-Timestep:  57%|█████▋    | 17/30 [00:05<00:04,  2.93it/s][A
-Timestep:  60%|██████    | 18/30 [00:06<00:04,  2.93it/s][A
-Timestep:  63%|██████▎   | 19/30 [00:06<00:03,  2.93it/s][A
-Timestep:  67%|██████▋   | 20/30 [00:06<00:03,  2.93it/s][A
-Timestep:  70%|███████   | 21/30 [00:07<00:03,  2.93it/s][A
-Timestep:  73%|███████▎  | 22/30 [00:07<00:02,  2.93it/s][A
-Timestep:  77%|███████▋  | 23/30 [00:07<00:02,  2.93it/s][A
-Timestep:  80%|████████  | 24/30 [00:08<00:02,  2.93it/s][A
-Timestep:  83%|████████▎ | 25/30 [00:08<00:01,  2.93it/s][A
-Timestep:  87%|████████▋ | 26/30 [00:08<00:01,  2.93it/s][A
-Timestep:  90%|█████████ | 27/30 [00:09<00:01,  2.93it/s][A
-Timestep:  93%|█████████▎| 28/30 [00:09<00:00,  2.93it/s][A
-Timestep:  97%|█████████▋| 29/30 [00:09<00:00,  2.93it/s][A
-Timestep: 100%|██████████| 30/30 [00:10<00:00,  2.93it/s][A
-                                                         [AGenerating train split: 61 examples [00:55,  1.91s/ examples]Generating train split: 62 examples [00:55,  1.59s/ examples]Generating train split: 64 examples [00:55,  1.09s/ examples]Generating train split: 66 examples [00:55,  1.30 examples/s]Generating train split: 68 examples [00:55,  1.80 examples/s]Generating train split: 70 examples [00:56,  2.40 examples/s]Generating train split: 72 examples [00:56,  3.11 examples/s]Generating train split: 74 examples [00:56,  4.00 examples/s]Generating train split: 76 examples [00:56,  4.89 examples/s]Generating train split: 78 examples [00:56,  5.78 examples/s]Generating train split: 80 examples [00:57,  6.66 examples/s]
-
- 57%|█████▋    | 4/7 [00:57<00:41, 14.00s/it][A[A
-Timestep:   0%|          | 0/30 [00:00<?, ?it/s][A
-Timestep:   3%|▎         | 1/30 [00:00<00:09,  2.95it/s][A
-Timestep:   7%|▋         | 2/30 [00:00<00:09,  2.94it/s][A
-Timestep:  10%|█         | 3/30 [00:01<00:09,  2.93it/s][A
-Timestep:  13%|█▎        | 4/30 [00:01<00:08,  2.93it/s][A
-Timestep:  17%|█▋        | 5/30 [00:01<00:08,  2.93it/s][A
-Timestep:  20%|██        | 6/30 [00:02<00:08,  2.93it/s][A
-Timestep:  23%|██▎       | 7/30 [00:02<00:07,  2.93it/s][A
-Timestep:  27%|██▋       | 8/30 [00:02<00:07,  2.93it/s][A
-Timestep:  30%|███       | 9/30 [00:03<00:07,  2.93it/s][A
-Timestep:  33%|███▎      | 10/30 [00:03<00:06,  2.93it/s][A
-Timestep:  37%|███▋      | 11/30 [00:03<00:06,  2.92it/s][A
-Timestep:  40%|████      | 12/30 [00:04<00:06,  2.92it/s][A
-Timestep:  43%|████▎     | 13/30 [00:04<00:05,  2.92it/s][A
-Timestep:  47%|████▋     | 14/30 [00:04<00:05,  2.92it/s][A
-Timestep:  50%|█████     | 15/30 [00:05<00:05,  2.92it/s][A
-Timestep:  53%|█████▎    | 16/30 [00:05<00:04,  2.92it/s][A
-Timestep:  57%|█████▋    | 17/30 [00:05<00:04,  2.93it/s][A
-Timestep:  60%|██████    | 18/30 [00:06<00:04,  2.93it/s][A
-Timestep:  63%|██████▎   | 19/30 [00:06<00:03,  2.93it/s][A
-Timestep:  67%|██████▋   | 20/30 [00:06<00:03,  2.93it/s][A
-Timestep:  70%|███████   | 21/30 [00:07<00:03,  2.93it/s][A
-Timestep:  73%|███████▎  | 22/30 [00:07<00:02,  2.92it/s][A
-Timestep:  77%|███████▋  | 23/30 [00:07<00:02,  2.92it/s][A
-Timestep:  80%|████████  | 24/30 [00:08<00:02,  2.92it/s][A
-Timestep:  83%|████████▎ | 25/30 [00:08<00:01,  2.92it/s][A
-Timestep:  87%|████████▋ | 26/30 [00:08<00:01,  2.92it/s][A
-Timestep:  90%|█████████ | 27/30 [00:09<00:01,  2.93it/s][A
-Timestep:  93%|█████████▎| 28/30 [00:09<00:00,  2.93it/s][A
-Timestep:  97%|█████████▋| 29/30 [00:09<00:00,  2.93it/s][A
-Timestep: 100%|██████████| 30/30 [00:10<00:00,  2.93it/s][A
-                                                         [AGenerating train split: 82 examples [01:09,  1.90s/ examples]Generating train split: 84 examples [01:09,  1.36s/ examples]Generating train split: 86 examples [01:09,  1.02 examples/s]Generating train split: 88 examples [01:09,  1.41 examples/s]Generating train split: 90 examples [01:09,  1.91 examples/s]Generating train split: 92 examples [01:09,  2.56 examples/s]Generating train split: 94 examples [01:10,  3.32 examples/s]Generating train split: 96 examples [01:10,  4.27 examples/s]Generating train split: 98 examples [01:10,  5.19 examples/s]Generating train split: 100 examples [01:10,  5.83 examples/s]
-
- 71%|███████▏  | 5/7 [01:10<00:27, 13.86s/it][A[A
-Timestep:   0%|          | 0/30 [00:00<?, ?it/s][A
-Timestep:   3%|▎         | 1/30 [00:00<00:09,  2.96it/s][A
-Timestep:   7%|▋         | 2/30 [00:00<00:09,  2.94it/s][A
-Timestep:  10%|█         | 3/30 [00:01<00:09,  2.93it/s][A
-Timestep:  13%|█▎        | 4/30 [00:01<00:08,  2.93it/s][A
-Timestep:  17%|█▋        | 5/30 [00:01<00:08,  2.93it/s][A
-Timestep:  20%|██        | 6/30 [00:02<00:08,  2.93it/s][A
-Timestep:  23%|██▎       | 7/30 [00:02<00:07,  2.93it/s][A
-Timestep:  27%|██▋       | 8/30 [00:02<00:07,  2.93it/s][A
-Timestep:  30%|███       | 9/30 [00:03<00:07,  2.92it/s][A
-Timestep:  33%|███▎      | 10/30 [00:03<00:06,  2.92it/s][A
-Timestep:  37%|███▋      | 11/30 [00:03<00:06,  2.92it/s][A
-Timestep:  40%|████      | 12/30 [00:04<00:06,  2.93it/s][A
-Timestep:  43%|████▎     | 13/30 [00:04<00:05,  2.93it/s][A
-Timestep:  47%|████▋     | 14/30 [00:04<00:05,  2.93it/s][A
-Timestep:  50%|█████     | 15/30 [00:05<00:05,  2.93it/s][A
-Timestep:  53%|█████▎    | 16/30 [00:05<00:04,  2.93it/s][A
-Timestep:  57%|█████▋    | 17/30 [00:05<00:04,  2.93it/s][A
-Timestep:  60%|██████    | 18/30 [00:06<00:04,  2.93it/s][A
-Timestep:  63%|██████▎   | 19/30 [00:06<00:03,  2.93it/s][A
-Timestep:  67%|██████▋   | 20/30 [00:06<00:03,  2.93it/s][A
-Timestep:  70%|███████   | 21/30 [00:07<00:03,  2.93it/s][A
-Timestep:  73%|███████▎  | 22/30 [00:07<00:02,  2.93it/s][A
-Timestep:  77%|███████▋  | 23/30 [00:07<00:02,  2.93it/s][A
-Timestep:  80%|████████  | 24/30 [00:08<00:02,  2.93it/s][A
-Timestep:  83%|████████▎ | 25/30 [00:08<00:01,  2.93it/s][A
-Timestep:  87%|████████▋ | 26/30 [00:08<00:01,  2.93it/s][A
-Timestep:  90%|█████████ | 27/30 [00:09<00:01,  2.93it/s][A
-Timestep:  93%|█████████▎| 28/30 [00:09<00:00,  2.93it/s][A
-Timestep:  97%|█████████▋| 29/30 [00:09<00:00,  2.93it/s][A
-Timestep: 100%|██████████| 30/30 [00:10<00:00,  2.93it/s][A
-                                                         [AGenerating train split: 100 examples [01:21,  5.83 examples/s]Generating train split: 101 examples [01:22,  2.23s/ examples]Generating train split: 102 examples [01:22,  1.81s/ examples]Generating train split: 103 examples [01:22,  1.43s/ examples]Generating train split: 105 examples [01:23,  1.10 examples/s]Generating train split: 107 examples [01:23,  1.63 examples/s]Generating train split: 109 examples [01:23,  2.28 examples/s]Generating train split: 111 examples [01:23,  3.10 examples/s]Generating train split: 113 examples [01:23,  3.99 examples/s]Generating train split: 115 examples [01:23,  4.91 examples/s]Generating train split: 117 examples [01:24,  5.92 examples/s]Generating train split: 119 examples [01:24,  6.92 examples/s]
-
- 86%|████████▌ | 6/7 [01:24<00:13, 13.78s/it][A[A
-Timestep:   0%|          | 0/30 [00:00<?, ?it/s][A
-Timestep:   3%|▎         | 1/30 [00:00<00:06,  4.49it/s][A
-Timestep:   7%|▋         | 2/30 [00:00<00:06,  4.48it/s][A
-Timestep:  10%|█         | 3/30 [00:00<00:06,  4.47it/s][A
-Timestep:  13%|█▎        | 4/30 [00:00<00:05,  4.47it/s][A
-Timestep:  17%|█▋        | 5/30 [00:01<00:05,  4.47it/s][A
-Timestep:  20%|██        | 6/30 [00:01<00:05,  4.47it/s][A
-Timestep:  23%|██▎       | 7/30 [00:01<00:05,  4.47it/s][A
-Timestep:  27%|██▋       | 8/30 [00:01<00:04,  4.47it/s][A
-Timestep:  30%|███       | 9/30 [00:02<00:04,  4.47it/s][A
-Timestep:  33%|███▎      | 10/30 [00:02<00:04,  4.47it/s][A
-Timestep:  37%|███▋      | 11/30 [00:02<00:04,  4.47it/s][A
-Timestep:  40%|████      | 12/30 [00:02<00:04,  4.47it/s][A
-Timestep:  43%|████▎     | 13/30 [00:02<00:03,  4.47it/s][A
-Timestep:  47%|████▋     | 14/30 [00:03<00:03,  4.47it/s][A
-Timestep:  50%|█████     | 15/30 [00:03<00:03,  4.47it/s][A
-Timestep:  53%|█████▎    | 16/30 [00:03<00:03,  4.47it/s][A
-Timestep:  57%|█████▋    | 17/30 [00:03<00:02,  4.47it/s][A
-Timestep:  60%|██████    | 18/30 [00:04<00:02,  4.47it/s][A
-Timestep:  63%|██████▎   | 19/30 [00:04<00:02,  4.47it/s][A
-Timestep:  67%|██████▋   | 20/30 [00:04<00:02,  4.47it/s][A
-Timestep:  70%|███████   | 21/30 [00:04<00:02,  4.47it/s][A
-Timestep:  73%|███████▎  | 22/30 [00:04<00:01,  4.47it/s][A
-Timestep:  77%|███████▋  | 23/30 [00:05<00:01,  4.47it/s][A
-Timestep:  80%|████████  | 24/30 [00:05<00:01,  4.47it/s][A
-Timestep:  83%|████████▎ | 25/30 [00:05<00:01,  4.47it/s][A
-Timestep:  87%|████████▋ | 26/30 [00:05<00:00,  4.47it/s][A
-Timestep:  90%|█████████ | 27/30 [00:06<00:00,  4.47it/s][A
-Timestep:  93%|█████████▎| 28/30 [00:06<00:00,  4.47it/s][A
-Timestep:  97%|█████████▋| 29/30 [00:06<00:00,  4.47it/s][A
-Timestep: 100%|██████████| 30/30 [00:06<00:00,  4.47it/s][A
-                                                         [AGenerating train split: 121 examples [01:32,  1.28s/ examples]Generating train split: 123 examples [01:32,  1.08 examples/s]Generating train split: 124 examples [01:32,  1.28 examples/s]Generating train split: 126 examples [01:32,  1.81 examples/s]Generating train split: 128 examples [01:32,  2.49 examples/s]Generating train split: 130 examples [01:32,  3.31 examples/s]Generating train split: 132 examples [01:33,  4.22 examples/s]Generating train split: 134 examples [01:33,  5.15 examples/s]
-
-100%|██████████| 7/7 [01:33<00:00, 12.23s/it][A[A100%|██████████| 7/7 [01:33<00:00, 13.34s/it]
-
- 10%|█         | 1/10 [01:33<14:00, 93.41s/it][A
-
-  0%|          | 0/7 [00:00<?, ?it/s][A[A
-Timestep:   0%|          | 0/30 [00:00<?, ?it/s][A
-Timestep:   3%|▎         | 1/30 [00:00<00:09,  2.95it/s][A
-Timestep:   7%|▋         | 2/30 [00:00<00:09,  2.93it/s][A
-Timestep:  10%|█         | 3/30 [00:01<00:09,  2.93it/s][A
-Timestep:  13%|█▎        | 4/30 [00:01<00:08,  2.93it/s][A
-Timestep:  17%|█▋        | 5/30 [00:01<00:08,  2.93it/s][A
-Timestep:  20%|██        | 6/30 [00:02<00:08,  2.93it/s][A
-Timestep:  23%|██▎       | 7/30 [00:02<00:07,  2.93it/s][A
-Timestep:  27%|██▋       | 8/30 [00:02<00:07,  2.93it/s][A
-Timestep:  30%|███       | 9/30 [00:03<00:07,  2.92it/s][A
-Timestep:  33%|███▎      | 10/30 [00:03<00:06,  2.93it/s][A
-Timestep:  37%|███▋      | 11/30 [00:03<00:06,  2.92it/s][A
-Timestep:  40%|████      | 12/30 [00:04<00:06,  2.93it/s][A
-Timestep:  43%|████▎     | 13/30 [00:04<00:05,  2.93it/s][A
-Timestep:  47%|████▋     | 14/30 [00:04<00:05,  2.93it/s][A
-Timestep:  50%|█████     | 15/30 [00:05<00:05,  2.93it/s][A
-Timestep:  53%|█████▎    | 16/30 [00:05<00:04,  2.93it/s][A
-Timestep:  57%|█████▋    | 17/30 [00:05<00:04,  2.93it/s][A
-Timestep:  60%|██████    | 18/30 [00:06<00:04,  2.93it/s][A
-Timestep:  63%|██████▎   | 19/30 [00:06<00:03,  2.93it/s][A
-Timestep:  67%|██████▋   | 20/30 [00:06<00:03,  2.93it/s][A
-Timestep:  70%|███████   | 21/30 [00:07<00:03,  2.93it/s][A
-Timestep:  73%|███████▎  | 22/30 [00:07<00:02,  2.93it/s][A
-Timestep:  77%|███████▋  | 23/30 [00:07<00:02,  2.93it/s][A
-Timestep:  80%|████████  | 24/30 [00:08<00:02,  2.93it/s][A
-Timestep:  83%|████████▎ | 25/30 [00:08<00:01,  2.93it/s][A
-Timestep:  87%|████████▋ | 26/30 [00:08<00:01,  2.93it/s][A
-Timestep:  90%|█████████ | 27/30 [00:09<00:01,  2.93it/s][A
-Timestep:  93%|█████████▎| 28/30 [00:09<00:00,  2.93it/s][A
-Timestep:  97%|█████████▋| 29/30 [00:09<00:00,  2.93it/s][A
-Timestep: 100%|██████████| 30/30 [00:10<00:00,  2.93it/s][A
-                                                         [AGenerating train split: 136 examples [01:45,  1.96s/ examples]Generating train split: 138 examples [01:45,  1.39s/ examples]Generating train split: 140 examples [01:45,  1.00s/ examples]Generating train split: 142 examples [01:45,  1.37 examples/s]Generating train split: 144 examples [01:46,  1.86 examples/s]Generating train split: 146 examples [01:46,  2.46 examples/s]Generating train split: 148 examples [01:46,  3.21 examples/s]Generating train split: 150 examples [01:46,  4.06 examples/s]Generating train split: 152 examples [01:46,  4.97 examples/s]Generating train split: 154 examples [01:46,  5.89 examples/s]
-
- 14%|█▍        | 1/7 [00:13<01:22, 13.68s/it][A[A
-Timestep:   0%|          | 0/30 [00:00<?, ?it/s][A
-Timestep:   3%|▎         | 1/30 [00:00<00:09,  2.94it/s][A
-Timestep:   7%|▋         | 2/30 [00:00<00:09,  2.93it/s][A
-Timestep:  10%|█         | 3/30 [00:01<00:09,  2.93it/s][A
-Timestep:  13%|█▎        | 4/30 [00:01<00:08,  2.93it/s][A
-Timestep:  17%|█▋        | 5/30 [00:01<00:08,  2.93it/s][A
-Timestep:  20%|██        | 6/30 [00:02<00:08,  2.93it/s][A
-Timestep:  23%|██▎       | 7/30 [00:02<00:07,  2.93it/s][A
-Timestep:  27%|██▋       | 8/30 [00:02<00:07,  2.93it/s][A
-Timestep:  30%|███       | 9/30 [00:03<00:07,  2.93it/s][A
-Timestep:  33%|███▎      | 10/30 [00:03<00:06,  2.93it/s][A
-Timestep:  37%|███▋      | 11/30 [00:03<00:06,  2.93it/s][A
-Timestep:  40%|████      | 12/30 [00:04<00:06,  2.93it/s][A
-Timestep:  43%|████▎     | 13/30 [00:04<00:05,  2.93it/s][A
-Timestep:  47%|████▋     | 14/30 [00:04<00:05,  2.93it/s][A
-Timestep:  50%|█████     | 15/30 [00:05<00:05,  2.93it/s][A
-Timestep:  53%|█████▎    | 16/30 [00:05<00:04,  2.93it/s][A
-Timestep:  57%|█████▋    | 17/30 [00:05<00:04,  2.92it/s][A
-Timestep:  60%|██████    | 18/30 [00:06<00:04,  2.93it/s][A
-Timestep:  63%|██████▎   | 19/30 [00:06<00:03,  2.93it/s][A
-Timestep:  67%|██████▋   | 20/30 [00:06<00:03,  2.93it/s][A
-Timestep:  70%|███████   | 21/30 [00:07<00:03,  2.93it/s][A
-Timestep:  73%|███████▎  | 22/30 [00:07<00:02,  2.93it/s][A
-Timestep:  77%|███████▋  | 23/30 [00:07<00:02,  2.93it/s][A
-Timestep:  80%|████████  | 24/30 [00:08<00:02,  2.93it/s][A
-Timestep:  83%|████████▎ | 25/30 [00:08<00:01,  2.93it/s][A
-Timestep:  87%|████████▋ | 26/30 [00:08<00:01,  2.93it/s][A
-Timestep:  90%|█████████ | 27/30 [00:09<00:01,  2.93it/s][A
-Timestep:  93%|█████████▎| 28/30 [00:09<00:00,  2.93it/s][A
-Timestep:  97%|█████████▋| 29/30 [00:09<00:00,  2.93it/s][A
-Timestep: 100%|██████████| 30/30 [00:10<00:00,  2.93it/s][A
-                                                         [AGenerating train split: 156 examples [01:58,  1.91s/ examples]Generating train split: 157 examples [01:59,  1.59s/ examples]Generating train split: 159 examples [01:59,  1.09s/ examples]Generating train split: 161 examples [01:59,  1.31 examples/s]Generating train split: 163 examples [01:59,  1.82 examples/s]Generating train split: 165 examples [01:59,  2.44 examples/s]Generating train split: 167 examples [01:59,  3.19 examples/s]Generating train split: 169 examples [02:00,  4.11 examples/s]Generating train split: 171 examples [02:00,  5.04 examples/s]Generating train split: 173 examples [02:00,  6.07 examples/s]Generating train split: 175 examples [02:00,  7.03 examples/s]
-
- 29%|██▊       | 2/7 [00:27<01:08, 13.62s/it][A[A
-Timestep:   0%|          | 0/30 [00:00<?, ?it/s][A
-Timestep:   3%|▎         | 1/30 [00:00<00:09,  2.96it/s][A
-Timestep:   7%|▋         | 2/30 [00:00<00:09,  2.94it/s][A
-Timestep:  10%|█         | 3/30 [00:01<00:09,  2.93it/s][A
-Timestep:  13%|█▎        | 4/30 [00:01<00:08,  2.93it/s][A
-Timestep:  17%|█▋        | 5/30 [00:01<00:08,  2.93it/s][A
-Timestep:  20%|██        | 6/30 [00:02<00:08,  2.93it/s][A
-Timestep:  23%|██▎       | 7/30 [00:02<00:07,  2.93it/s][A
-Timestep:  27%|██▋       | 8/30 [00:02<00:07,  2.93it/s][A
-Timestep:  30%|███       | 9/30 [00:03<00:07,  2.93it/s][A
-Timestep:  33%|███▎      | 10/30 [00:03<00:06,  2.93it/s][A
-Timestep:  37%|███▋      | 11/30 [00:03<00:06,  2.93it/s][A
-Timestep:  40%|████      | 12/30 [00:04<00:06,  2.93it/s][A
-Timestep:  43%|████▎     | 13/30 [00:04<00:05,  2.93it/s][A
-Timestep:  47%|████▋     | 14/30 [00:04<00:05,  2.93it/s][A
-Timestep:  50%|█████     | 15/30 [00:05<00:05,  2.93it/s][A
-Timestep:  53%|█████▎    | 16/30 [00:05<00:04,  2.93it/s][A
-Timestep:  57%|█████▋    | 17/30 [00:05<00:04,  2.93it/s][A
-Timestep:  60%|██████    | 18/30 [00:06<00:04,  2.93it/s][A
-Timestep:  63%|██████▎   | 19/30 [00:06<00:03,  2.93it/s][A
-Timestep:  67%|██████▋   | 20/30 [00:06<00:03,  2.93it/s][A
-Timestep:  70%|███████   | 21/30 [00:07<00:03,  2.93it/s][A
-Timestep:  73%|███████▎  | 22/30 [00:07<00:02,  2.93it/s][A
-Timestep:  77%|███████▋  | 23/30 [00:07<00:02,  2.93it/s][A
-Timestep:  80%|████████  | 24/30 [00:08<00:02,  2.93it/s][A
-Timestep:  83%|████████▎ | 25/30 [00:08<00:01,  2.93it/s][A
-Timestep:  87%|████████▋ | 26/30 [00:08<00:01,  2.93it/s][A
-Timestep:  90%|█████████ | 27/30 [00:09<00:01,  2.93it/s][A
-Timestep:  93%|█████████▎| 28/30 [00:09<00:00,  2.93it/s][A
-Timestep:  97%|█████████▋| 29/30 [00:09<00:00,  2.93it/s][A
-Timestep: 100%|██████████| 30/30 [00:10<00:00,  2.93it/s][A
-                                                         [AGenerating train split: 175 examples [02:11,  7.03 examples/s]Generating train split: 176 examples [02:12,  2.22s/ examples]Generating train split: 178 examples [02:12,  1.50s/ examples]Generating train split: 180 examples [02:12,  1.04s/ examples]Generating train split: 182 examples [02:13,  1.35 examples/s]Generating train split: 184 examples [02:13,  1.86 examples/s]Generating train split: 186 examples [02:13,  2.48 examples/s]Generating train split: 188 examples [02:13,  3.21 examples/s]Generating train split: 190 examples [02:13,  4.06 examples/s]Generating train split: 192 examples [02:13,  5.16 examples/s]Generating train split: 194 examples [02:14,  6.08 examples/s]
-
- 43%|████▎     | 3/7 [00:40<00:54, 13.61s/it][A[A
-Timestep:   0%|          | 0/30 [00:00<?, ?it/s][A
-Timestep:   3%|▎         | 1/30 [00:00<00:09,  2.94it/s][A
-Timestep:   7%|▋         | 2/30 [00:00<00:09,  2.93it/s][A
-Timestep:  10%|█         | 3/30 [00:01<00:09,  2.93it/s][A
-Timestep:  13%|█▎        | 4/30 [00:01<00:08,  2.93it/s][A
-Timestep:  17%|█▋        | 5/30 [00:01<00:08,  2.93it/s][A
-Timestep:  20%|██        | 6/30 [00:02<00:08,  2.93it/s][A
-Timestep:  23%|██▎       | 7/30 [00:02<00:07,  2.93it/s][A
-Timestep:  27%|██▋       | 8/30 [00:02<00:07,  2.93it/s][A
-Timestep:  30%|███       | 9/30 [00:03<00:07,  2.93it/s][A
-Timestep:  33%|███▎      | 10/30 [00:03<00:06,  2.93it/s][A
-Timestep:  37%|███▋      | 11/30 [00:03<00:06,  2.93it/s][A
-Timestep:  40%|████      | 12/30 [00:04<00:06,  2.93it/s][A
-Timestep:  43%|████▎     | 13/30 [00:04<00:05,  2.93it/s][A
-Timestep:  47%|████▋     | 14/30 [00:04<00:05,  2.93it/s][A
-Timestep:  50%|█████     | 15/30 [00:05<00:05,  2.93it/s][A
-Timestep:  53%|█████▎    | 16/30 [00:05<00:04,  2.93it/s][A
-Timestep:  57%|█████▋    | 17/30 [00:05<00:04,  2.93it/s][A
-Timestep:  60%|██████    | 18/30 [00:06<00:04,  2.93it/s][A
-Timestep:  63%|██████▎   | 19/30 [00:06<00:03,  2.92it/s][A
-Timestep:  67%|██████▋   | 20/30 [00:06<00:03,  2.92it/s][A
-Timestep:  70%|███████   | 21/30 [00:07<00:03,  2.93it/s][A
-Timestep:  73%|███████▎  | 22/30 [00:07<00:02,  2.93it/s][A
-Timestep:  77%|███████▋  | 23/30 [00:07<00:02,  2.93it/s][A
-Timestep:  80%|████████  | 24/30 [00:08<00:02,  2.93it/s][A
-Timestep:  83%|████████▎ | 25/30 [00:08<00:01,  2.93it/s][A
-Timestep:  87%|████████▋ | 26/30 [00:08<00:01,  2.93it/s][A
-Timestep:  90%|█████████ | 27/30 [00:09<00:01,  2.93it/s][A
-Timestep:  93%|█████████▎| 28/30 [00:09<00:00,  2.93it/s][A
-Timestep:  97%|█████████▋| 29/30 [00:09<00:00,  2.93it/s][A
-Timestep: 100%|██████████| 30/30 [00:10<00:00,  2.93it/s][A
-                                                         [AGenerating train split: 196 examples [02:26,  1.92s/ examples]Generating train split: 198 examples [02:26,  1.37s/ examples]Generating train split: 200 examples [02:26,  1.01 examples/s]Generating train split: 202 examples [02:26,  1.39 examples/s]Generating train split: 204 examples [02:26,  1.86 examples/s]Generating train split: 206 examples [02:27,  2.47 examples/s]Generating train split: 208 examples [02:27,  3.16 examples/s]Generating train split: 210 examples [02:27,  4.03 examples/s]Generating train split: 212 examples [02:27,  4.86 examples/s]Generating train split: 214 examples [02:27,  5.79 examples/s]
-
- 57%|█████▋    | 4/7 [00:54<00:41, 13.67s/it][A[A
-Timestep:   0%|          | 0/30 [00:00<?, ?it/s][A
-Timestep:   3%|▎         | 1/30 [00:00<00:09,  2.95it/s][A
-Timestep:   7%|▋         | 2/30 [00:00<00:09,  2.93it/s][A
-Timestep:  10%|█         | 3/30 [00:01<00:09,  2.93it/s][A
-Timestep:  13%|█▎        | 4/30 [00:01<00:08,  2.93it/s][A
-Timestep:  17%|█▋        | 5/30 [00:01<00:08,  2.93it/s][A
-Timestep:  20%|██        | 6/30 [00:02<00:08,  2.93it/s][A
-Timestep:  23%|██▎       | 7/30 [00:02<00:07,  2.93it/s][A
-Timestep:  27%|██▋       | 8/30 [00:02<00:07,  2.93it/s][A
-Timestep:  30%|███       | 9/30 [00:03<00:07,  2.93it/s][A
-Timestep:  33%|███▎      | 10/30 [00:03<00:06,  2.93it/s][A
-Timestep:  37%|███▋      | 11/30 [00:03<00:06,  2.92it/s][A
-Timestep:  40%|████      | 12/30 [00:04<00:06,  2.92it/s][A
-Timestep:  43%|████▎     | 13/30 [00:04<00:05,  2.92it/s][A
-Timestep:  47%|████▋     | 14/30 [00:04<00:05,  2.92it/s][A
-Timestep:  50%|█████     | 15/30 [00:05<00:05,  2.93it/s][A
-Timestep:  53%|█████▎    | 16/30 [00:05<00:04,  2.93it/s][A
-Timestep:  57%|█████▋    | 17/30 [00:05<00:04,  2.92it/s][A
-Timestep:  60%|██████    | 18/30 [00:06<00:04,  2.92it/s][A
-Timestep:  63%|██████▎   | 19/30 [00:06<00:03,  2.92it/s][A
-Timestep:  67%|██████▋   | 20/30 [00:06<00:03,  2.92it/s][A
-Timestep:  70%|███████   | 21/30 [00:07<00:03,  2.92it/s][A
-Timestep:  73%|███████▎  | 22/30 [00:07<00:02,  2.92it/s][A
-Timestep:  77%|███████▋  | 23/30 [00:07<00:02,  2.93it/s][A
-Timestep:  80%|████████  | 24/30 [00:08<00:02,  2.93it/s][A
-Timestep:  83%|████████▎ | 25/30 [00:08<00:01,  2.92it/s][A
-Timestep:  87%|████████▋ | 26/30 [00:08<00:01,  2.92it/s][A
-Timestep:  90%|█████████ | 27/30 [00:09<00:01,  2.92it/s][A
-Timestep:  93%|█████████▎| 28/30 [00:09<00:00,  2.92it/s][A
-Timestep:  97%|█████████▋| 29/30 [00:09<00:00,  2.92it/s][A
-Timestep: 100%|██████████| 30/30 [00:10<00:00,  2.92it/s][A
-                                                         [AGenerating train split: 216 examples [02:39,  1.92s/ examples]Generating train split: 218 examples [02:40,  1.36s/ examples]Generating train split: 220 examples [02:40,  1.02 examples/s]Generating train split: 222 examples [02:40,  1.39 examples/s]Generating train split: 224 examples [02:40,  1.88 examples/s]Generating train split: 226 examples [02:40,  2.50 examples/s]Generating train split: 228 examples [02:40,  3.26 examples/s]Generating train split: 230 examples [02:41,  4.11 examples/s]Generating train split: 232 examples [02:41,  4.98 examples/s]Generating train split: 234 examples [02:41,  5.87 examples/s]
-
- 71%|███████▏  | 5/7 [01:08<00:27, 13.66s/it][A[A
-Timestep:   0%|          | 0/30 [00:00<?, ?it/s][A
-Timestep:   3%|▎         | 1/30 [00:00<00:09,  2.94it/s][A
-Timestep:   7%|▋         | 2/30 [00:00<00:09,  2.93it/s][A
-Timestep:  10%|█         | 3/30 [00:01<00:09,  2.93it/s][A
-Timestep:  13%|█▎        | 4/30 [00:01<00:08,  2.93it/s][A
-Timestep:  17%|█▋        | 5/30 [00:01<00:08,  2.93it/s][A
-Timestep:  20%|██        | 6/30 [00:02<00:08,  2.93it/s][A
-Timestep:  23%|██▎       | 7/30 [00:02<00:07,  2.93it/s][A
-Timestep:  27%|██▋       | 8/30 [00:02<00:07,  2.93it/s][A
-Timestep:  30%|███       | 9/30 [00:03<00:07,  2.93it/s][A
-Timestep:  33%|███▎      | 10/30 [00:03<00:06,  2.93it/s][A
-Timestep:  37%|███▋      | 11/30 [00:03<00:06,  2.93it/s][A
-Timestep:  40%|████      | 12/30 [00:04<00:06,  2.93it/s][A
-Timestep:  43%|████▎     | 13/30 [00:04<00:05,  2.93it/s][A
-Timestep:  47%|████▋     | 14/30 [00:04<00:05,  2.93it/s][A
-Timestep:  50%|█████     | 15/30 [00:05<00:05,  2.93it/s][A
-Timestep:  53%|█████▎    | 16/30 [00:05<00:04,  2.93it/s][A
-Timestep:  57%|█████▋    | 17/30 [00:05<00:04,  2.93it/s][A
-Timestep:  60%|██████    | 18/30 [00:06<00:04,  2.93it/s][A
-Timestep:  63%|██████▎   | 19/30 [00:06<00:03,  2.93it/s][A
-Timestep:  67%|██████▋   | 20/30 [00:06<00:03,  2.93it/s][A
-Timestep:  70%|███████   | 21/30 [00:07<00:03,  2.93it/s][A
-Timestep:  73%|███████▎  | 22/30 [00:07<00:02,  2.93it/s][A
-Timestep:  77%|███████▋  | 23/30 [00:07<00:02,  2.93it/s][A
-Timestep:  80%|████████  | 24/30 [00:08<00:02,  2.93it/s][A
-Timestep:  83%|████████▎ | 25/30 [00:08<00:01,  2.93it/s][A
-Timestep:  87%|████████▋ | 26/30 [00:08<00:01,  2.93it/s][A
-Timestep:  90%|█████████ | 27/30 [00:09<00:01,  2.93it/s][A
-Timestep:  93%|█████████▎| 28/30 [00:09<00:00,  2.93it/s][A
-Timestep:  97%|█████████▋| 29/30 [00:09<00:00,  2.93it/s][A
-Timestep: 100%|██████████| 30/30 [00:10<00:00,  2.93it/s][A
-                                                         [AGenerating train split: 235 examples [02:52,  5.87 examples/s]Generating train split: 236 examples [02:53,  1.91s/ examples]Generating train split: 237 examples [02:53,  1.59s/ examples]Generating train split: 239 examples [02:53,  1.09s/ examples]Generating train split: 241 examples [02:54,  1.30 examples/s]Generating train split: 243 examples [02:54,  1.81 examples/s]Generating train split: 245 examples [02:54,  2.43 examples/s]Generating train split: 247 examples [02:54,  3.15 examples/s]Generating train split: 249 examples [02:54,  4.02 examples/s]Generating train split: 251 examples [02:54,  5.00 examples/s]Generating train split: 253 examples [02:55,  5.98 examples/s]Generating train split: 255 examples [02:55,  7.04 examples/s]
-
- 86%|████████▌ | 6/7 [01:21<00:13, 13.65s/it][A[A
-Timestep:   0%|          | 0/30 [00:00<?, ?it/s][A
-Timestep:   3%|▎         | 1/30 [00:00<00:06,  4.53it/s][A
-Timestep:   7%|▋         | 2/30 [00:00<00:06,  4.51it/s][A
-Timestep:  10%|█         | 3/30 [00:00<00:06,  4.49it/s][A
-Timestep:  13%|█▎        | 4/30 [00:00<00:05,  4.48it/s][A
-Timestep:  17%|█▋        | 5/30 [00:01<00:05,  4.48it/s][A
-Timestep:  20%|██        | 6/30 [00:01<00:05,  4.48it/s][A
-Timestep:  23%|██▎       | 7/30 [00:01<00:05,  4.47it/s][A
-Timestep:  27%|██▋       | 8/30 [00:01<00:04,  4.47it/s][A
-Timestep:  30%|███       | 9/30 [00:02<00:04,  4.47it/s][A
-Timestep:  33%|███▎      | 10/30 [00:02<00:04,  4.47it/s][A
-Timestep:  37%|███▋      | 11/30 [00:02<00:04,  4.47it/s][A
-Timestep:  40%|████      | 12/30 [00:02<00:04,  4.47it/s][A
-Timestep:  43%|████▎     | 13/30 [00:02<00:03,  4.47it/s][A
-Timestep:  47%|████▋     | 14/30 [00:03<00:03,  4.47it/s][A
-Timestep:  50%|█████     | 15/30 [00:03<00:03,  4.47it/s][A
-Timestep:  53%|█████▎    | 16/30 [00:03<00:03,  4.47it/s][A
-Timestep:  57%|█████▋    | 17/30 [00:03<00:02,  4.47it/s][A
-Timestep:  60%|██████    | 18/30 [00:04<00:02,  4.47it/s][A
-Timestep:  63%|██████▎   | 19/30 [00:04<00:02,  4.47it/s][A
-Timestep:  67%|██████▋   | 20/30 [00:04<00:02,  4.47it/s][A
-Timestep:  70%|███████   | 21/30 [00:04<00:02,  4.47it/s][A
-Timestep:  73%|███████▎  | 22/30 [00:04<00:01,  4.47it/s][A
-Timestep:  77%|███████▋  | 23/30 [00:05<00:01,  4.47it/s][A
-Timestep:  80%|████████  | 24/30 [00:05<00:01,  4.47it/s][A
-Timestep:  83%|████████▎ | 25/30 [00:05<00:01,  4.47it/s][A
-Timestep:  87%|████████▋ | 26/30 [00:05<00:00,  4.47it/s][A
-Timestep:  90%|█████████ | 27/30 [00:06<00:00,  4.47it/s][A
-Timestep:  93%|█████████▎| 28/30 [00:06<00:00,  4.47it/s][A
-Timestep:  97%|█████████▋| 29/30 [00:06<00:00,  4.47it/s][A
-Timestep: 100%|██████████| 30/30 [00:06<00:00,  4.47it/s][A
-                                                         [AGenerating train split: 257 examples [03:03,  1.28s/ examples]Generating train split: 259 examples [03:03,  1.09 examples/s]Generating train split: 260 examples [03:03,  1.29 examples/s]Generating train split: 261 examples [03:03,  1.56 examples/s]Generating train split: 263 examples [03:03,  2.30 examples/s]Generating train split: 265 examples [03:03,  3.18 examples/s]Generating train split: 267 examples [03:04,  4.14 examples/s]Generating train split: 269 examples [03:04,  5.14 examples/s]
-
-100%|██████████| 7/7 [01:30<00:00, 12.13s/it][A[A100%|██████████| 7/7 [01:30<00:00, 12.99s/it]
-
- 20%|██        | 2/10 [03:04<12:15, 91.93s/it][A
-
-  0%|          | 0/7 [00:00<?, ?it/s][A[A
-Timestep:   0%|          | 0/30 [00:00<?, ?it/s][A
-Timestep:   3%|▎         | 1/30 [00:00<00:09,  2.95it/s][A
-Timestep:   7%|▋         | 2/30 [00:00<00:09,  2.94it/s][A
-Timestep:  10%|█         | 3/30 [00:01<00:09,  2.93it/s][A
-Timestep:  13%|█▎        | 4/30 [00:01<00:08,  2.93it/s][A
-Timestep:  17%|█▋        | 5/30 [00:01<00:08,  2.93it/s][A
-Timestep:  20%|██        | 6/30 [00:02<00:08,  2.93it/s][A
-Timestep:  23%|██▎       | 7/30 [00:02<00:07,  2.93it/s][A
-Timestep:  27%|██▋       | 8/30 [00:02<00:07,  2.93it/s][A
-Timestep:  30%|███       | 9/30 [00:03<00:07,  2.93it/s][A
-Timestep:  33%|███▎      | 10/30 [00:03<00:06,  2.93it/s][A
-Timestep:  37%|███▋      | 11/30 [00:03<00:06,  2.93it/s][A
-Timestep:  40%|████      | 12/30 [00:04<00:06,  2.93it/s][A
-Timestep:  43%|████▎     | 13/30 [00:04<00:05,  2.93it/s][A
-Timestep:  47%|████▋     | 14/30 [00:04<00:05,  2.93it/s][A
-Timestep:  50%|█████     | 15/30 [00:05<00:05,  2.93it/s][A
-Timestep:  53%|█████▎    | 16/30 [00:05<00:04,  2.93it/s][A
-Timestep:  57%|█████▋    | 17/30 [00:05<00:04,  2.93it/s][A
-Timestep:  60%|██████    | 18/30 [00:06<00:04,  2.93it/s][A
-Timestep:  63%|██████▎   | 19/30 [00:06<00:03,  2.93it/s][A
-Timestep:  67%|██████▋   | 20/30 [00:06<00:03,  2.93it/s][A
-Timestep:  70%|███████   | 21/30 [00:07<00:03,  2.93it/s][A
-Timestep:  73%|███████▎  | 22/30 [00:07<00:02,  2.93it/s][A
-Timestep:  77%|███████▋  | 23/30 [00:07<00:02,  2.93it/s][A
-Timestep:  80%|████████  | 24/30 [00:08<00:02,  2.93it/s][A
-Timestep:  83%|████████▎ | 25/30 [00:08<00:01,  2.93it/s][A
-Timestep:  87%|████████▋ | 26/30 [00:08<00:01,  2.92it/s][A
-Timestep:  90%|█████████ | 27/30 [00:09<00:01,  2.92it/s][A
-Timestep:  93%|█████████▎| 28/30 [00:09<00:00,  2.92it/s][A
-Timestep:  97%|█████████▋| 29/30 [00:09<00:00,  2.92it/s][A
-Timestep: 100%|██████████| 30/30 [00:10<00:00,  2.92it/s][A
-                                                         [AGenerating train split: 271 examples [03:16,  2.00s/ examples]Generating train split: 273 examples [03:16,  1.41s/ examples]Generating train split: 275 examples [03:16,  1.01s/ examples]Generating train split: 277 examples [03:16,  1.36 examples/s]Generating train split: 279 examples [03:16,  1.85 examples/s]Generating train split: 281 examples [03:17,  2.47 examples/s]Generating train split: 283 examples [03:17,  3.19 examples/s]Generating train split: 285 examples [03:17,  4.13 examples/s]Generating train split: 287 examples [03:17,  5.06 examples/s]Generating train split: 289 examples [03:17,  6.01 examples/s]
-
- 14%|█▍        | 1/7 [00:13<01:21, 13.62s/it][A[A
-Timestep:   0%|          | 0/30 [00:00<?, ?it/s][A
-Timestep:   3%|▎         | 1/30 [00:00<00:09,  2.95it/s][A
-Timestep:   7%|▋         | 2/30 [00:00<00:09,  2.93it/s][A
-Timestep:  10%|█         | 3/30 [00:01<00:09,  2.93it/s][A
-Timestep:  13%|█▎        | 4/30 [00:01<00:08,  2.93it/s][A
-Timestep:  17%|█▋        | 5/30 [00:01<00:08,  2.93it/s][A
-Timestep:  20%|██        | 6/30 [00:02<00:08,  2.93it/s][A
-Timestep:  23%|██▎       | 7/30 [00:02<00:07,  2.93it/s][A
-Timestep:  27%|██▋       | 8/30 [00:02<00:07,  2.93it/s][A
-Timestep:  30%|███       | 9/30 [00:03<00:07,  2.93it/s][A
-Timestep:  33%|███▎      | 10/30 [00:03<00:06,  2.93it/s][A
-Timestep:  37%|███▋      | 11/30 [00:03<00:06,  2.93it/s][A
-Timestep:  40%|████      | 12/30 [00:04<00:06,  2.93it/s][A
-Timestep:  43%|████▎     | 13/30 [00:04<00:05,  2.93it/s][A
-Timestep:  47%|████▋     | 14/30 [00:04<00:05,  2.93it/s][A
-Timestep:  50%|█████     | 15/30 [00:05<00:05,  2.93it/s][A
-Timestep:  53%|█████▎    | 16/30 [00:05<00:04,  2.93it/s][A
-Timestep:  57%|█████▋    | 17/30 [00:05<00:04,  2.93it/s][A
-Timestep:  60%|██████    | 18/30 [00:06<00:04,  2.93it/s][A
-Timestep:  63%|██████▎   | 19/30 [00:06<00:03,  2.93it/s][A
-Timestep:  67%|██████▋   | 20/30 [00:06<00:03,  2.93it/s][A
-Timestep:  70%|███████   | 21/30 [00:07<00:03,  2.92it/s][A
-Timestep:  73%|███████▎  | 22/30 [00:07<00:02,  2.93it/s][A
-Timestep:  77%|███████▋  | 23/30 [00:07<00:02,  2.92it/s][A
-Timestep:  80%|████████  | 24/30 [00:08<00:02,  2.92it/s][A
-Timestep:  83%|████████▎ | 25/30 [00:08<00:01,  2.92it/s][A
-Timestep:  87%|████████▋ | 26/30 [00:08<00:01,  2.92it/s][A
-Timestep:  90%|█████████ | 27/30 [00:09<00:01,  2.92it/s][A
-Timestep:  93%|█████████▎| 28/30 [00:09<00:00,  2.92it/s][A
-Timestep:  97%|█████████▋| 29/30 [00:09<00:00,  2.93it/s][A
-Timestep: 100%|██████████| 30/30 [00:10<00:00,  2.93it/s][A
-                                                         [AGenerating train split: 291 examples [03:29,  1.91s/ examples]Generating train split: 293 examples [03:29,  1.36s/ examples]Generating train split: 295 examples [03:30,  1.02 examples/s]Generating train split: 297 examples [03:30,  1.39 examples/s]Generating train split: 299 examples [03:30,  1.88 examples/s]Generating train split: 301 examples [03:30,  2.45 examples/s]Generating train split: 303 examples [03:30,  3.24 examples/s]Generating train split: 305 examples [03:31,  4.11 examples/s]Generating train split: 307 examples [03:31,  5.12 examples/s]Generating train split: 309 examples [03:31,  6.15 examples/s]
-
- 29%|██▊       | 2/7 [00:27<01:08, 13.63s/it][A[A
-Timestep:   0%|          | 0/30 [00:00<?, ?it/s][A
-Timestep:   3%|▎         | 1/30 [00:00<00:09,  2.94it/s][A
-Timestep:   7%|▋         | 2/30 [00:00<00:09,  2.93it/s][A
-Timestep:  10%|█         | 3/30 [00:01<00:09,  2.93it/s][A
-Timestep:  13%|█▎        | 4/30 [00:01<00:08,  2.93it/s][A
-Timestep:  17%|█▋        | 5/30 [00:01<00:08,  2.93it/s][A
-Timestep:  20%|██        | 6/30 [00:02<00:08,  2.93it/s][A
-Timestep:  23%|██▎       | 7/30 [00:02<00:07,  2.93it/s][A
-Timestep:  27%|██▋       | 8/30 [00:02<00:07,  2.93it/s][A
-Timestep:  30%|███       | 9/30 [00:03<00:07,  2.93it/s][A
-Timestep:  33%|███▎      | 10/30 [00:03<00:06,  2.93it/s][A
-Timestep:  37%|███▋      | 11/30 [00:03<00:06,  2.93it/s][A
-Timestep:  40%|████      | 12/30 [00:04<00:06,  2.93it/s][A
-Timestep:  43%|████▎     | 13/30 [00:04<00:05,  2.93it/s][A
-Timestep:  47%|████▋     | 14/30 [00:04<00:05,  2.93it/s][A
-Timestep:  50%|█████     | 15/30 [00:05<00:05,  2.93it/s][A
-Timestep:  53%|█████▎    | 16/30 [00:05<00:04,  2.93it/s][A
-Timestep:  57%|█████▋    | 17/30 [00:05<00:04,  2.93it/s][A
-Timestep:  60%|██████    | 18/30 [00:06<00:04,  2.93it/s][A
-Timestep:  63%|██████▎   | 19/30 [00:06<00:03,  2.93it/s][A
-Timestep:  67%|██████▋   | 20/30 [00:06<00:03,  2.93it/s][A
-Timestep:  70%|███████   | 21/30 [00:07<00:03,  2.93it/s][A
-Timestep:  73%|███████▎  | 22/30 [00:07<00:02,  2.93it/s][A
-Timestep:  77%|███████▋  | 23/30 [00:07<00:02,  2.93it/s][A
-Timestep:  80%|████████  | 24/30 [00:08<00:02,  2.93it/s][A
-Timestep:  83%|████████▎ | 25/30 [00:08<00:01,  2.93it/s][A
-Timestep:  87%|████████▋ | 26/30 [00:08<00:01,  2.93it/s][A
-Timestep:  90%|█████████ | 27/30 [00:09<00:01,  2.93it/s][A
-Timestep:  93%|█████████▎| 28/30 [00:09<00:00,  2.93it/s][A
-Timestep:  97%|█████████▋| 29/30 [00:09<00:00,  2.93it/s][A
-Timestep: 100%|██████████| 30/30 [00:10<00:00,  2.93it/s][A
-                                                         [AGenerating train split: 310 examples [03:41,  6.15 examples/s]Generating train split: 311 examples [03:43,  1.90s/ examples]Generating train split: 313 examples [03:43,  1.35s/ examples]Generating train split: 315 examples [03:43,  1.03 examples/s]Generating train split: 317 examples [03:43,  1.41 examples/s]Generating train split: 319 examples [03:44,  1.90 examples/s]Generating train split: 321 examples [03:44,  2.51 examples/s]Generating train split: 323 examples [03:44,  3.26 examples/s]Generating train split: 325 examples [03:44,  4.10 examples/s]Generating train split: 327 examples [03:44,  5.04 examples/s]Generating train split: 329 examples [03:45,  5.89 examples/s]
-
- 43%|████▎     | 3/7 [00:40<00:54, 13.62s/it][A[A
-Timestep:   0%|          | 0/30 [00:00<?, ?it/s][A
-Timestep:   3%|▎         | 1/30 [00:00<00:09,  2.96it/s][A
-Timestep:   7%|▋         | 2/30 [00:00<00:09,  2.94it/s][A
-Timestep:  10%|█         | 3/30 [00:01<00:09,  2.93it/s][A
-Timestep:  13%|█▎        | 4/30 [00:01<00:08,  2.93it/s][A
-Timestep:  17%|█▋        | 5/30 [00:01<00:08,  2.93it/s][A
-Timestep:  20%|██        | 6/30 [00:02<00:08,  2.93it/s][A
-Timestep:  23%|██▎       | 7/30 [00:02<00:07,  2.93it/s][A
-Timestep:  27%|██▋       | 8/30 [00:02<00:07,  2.93it/s][A
-Timestep:  30%|███       | 9/30 [00:03<00:07,  2.93it/s][A
-Timestep:  33%|███▎      | 10/30 [00:03<00:06,  2.93it/s][A
-Timestep:  37%|███▋      | 11/30 [00:03<00:06,  2.93it/s][A
-Timestep:  40%|████      | 12/30 [00:04<00:06,  2.93it/s][A
-Timestep:  43%|████▎     | 13/30 [00:04<00:05,  2.93it/s][A
-Timestep:  47%|████▋     | 14/30 [00:04<00:05,  2.93it/s][A
-Timestep:  50%|█████     | 15/30 [00:05<00:05,  2.93it/s][A
-Timestep:  53%|█████▎    | 16/30 [00:05<00:04,  2.93it/s][A
-Timestep:  57%|█████▋    | 17/30 [00:05<00:04,  2.93it/s][A
-Timestep:  60%|██████    | 18/30 [00:06<00:04,  2.93it/s][A
-Timestep:  63%|██████▎   | 19/30 [00:06<00:03,  2.93it/s][A
-Timestep:  67%|██████▋   | 20/30 [00:06<00:03,  2.93it/s][A
-Timestep:  70%|███████   | 21/30 [00:07<00:03,  2.93it/s][A
-Timestep:  73%|███████▎  | 22/30 [00:07<00:02,  2.93it/s][A
-Timestep:  77%|███████▋  | 23/30 [00:07<00:02,  2.93it/s][A
-Timestep:  80%|████████  | 24/30 [00:08<00:02,  2.93it/s][A
-Timestep:  83%|████████▎ | 25/30 [00:08<00:01,  2.93it/s][A
-Timestep:  87%|████████▋ | 26/30 [00:08<00:01,  2.93it/s][A
-Timestep:  90%|█████████ | 27/30 [00:09<00:01,  2.93it/s][A
-Timestep:  93%|█████████▎| 28/30 [00:09<00:00,  2.93it/s][A
-Timestep:  97%|█████████▋| 29/30 [00:09<00:00,  2.93it/s][A
-Timestep: 100%|██████████| 30/30 [00:10<00:00,  2.93it/s][A
-                                                         [AGenerating train split: 331 examples [03:57,  1.91s/ examples]Generating train split: 333 examples [03:57,  1.37s/ examples]Generating train split: 335 examples [03:57,  1.01 examples/s]Generating train split: 337 examples [03:57,  1.39 examples/s]Generating train split: 339 examples [03:57,  1.87 examples/s]Generating train split: 341 examples [03:57,  2.51 examples/s]Generating train split: 343 examples [03:58,  3.28 examples/s]Generating train split: 345 examples [03:58,  4.14 examples/s]Generating train split: 347 examples [03:58,  5.07 examples/s]Generating train split: 349 examples [03:58,  6.01 examples/s]
-
- 57%|█████▋    | 4/7 [00:54<00:40, 13.63s/it][A[A
-Timestep:   0%|          | 0/30 [00:00<?, ?it/s][A
-Timestep:   3%|▎         | 1/30 [00:00<00:09,  2.95it/s][A
-Timestep:   7%|▋         | 2/30 [00:00<00:09,  2.94it/s][A
-Timestep:  10%|█         | 3/30 [00:01<00:09,  2.93it/s][A
-Timestep:  13%|█▎        | 4/30 [00:01<00:08,  2.93it/s][A
-Timestep:  17%|█▋        | 5/30 [00:01<00:08,  2.93it/s][A
-Timestep:  20%|██        | 6/30 [00:02<00:08,  2.93it/s][A
-Timestep:  23%|██▎       | 7/30 [00:02<00:07,  2.93it/s][A
-Timestep:  27%|██▋       | 8/30 [00:02<00:07,  2.93it/s][A
-Timestep:  30%|███       | 9/30 [00:03<00:07,  2.93it/s][A
-Timestep:  33%|███▎      | 10/30 [00:03<00:06,  2.93it/s][A
-Timestep:  37%|███▋      | 11/30 [00:03<00:06,  2.93it/s][A
-Timestep:  40%|████      | 12/30 [00:04<00:06,  2.93it/s][A
-Timestep:  43%|████▎     | 13/30 [00:04<00:05,  2.93it/s][A
-Timestep:  47%|████▋     | 14/30 [00:04<00:05,  2.93it/s][A
-Timestep:  50%|█████     | 15/30 [00:05<00:05,  2.93it/s][A
-Timestep:  53%|█████▎    | 16/30 [00:05<00:04,  2.93it/s][A
-Timestep:  57%|█████▋    | 17/30 [00:05<00:04,  2.93it/s][A
-Timestep:  60%|██████    | 18/30 [00:06<00:04,  2.93it/s][A
-Timestep:  63%|██████▎   | 19/30 [00:06<00:03,  2.93it/s][A
-Timestep:  67%|██████▋   | 20/30 [00:06<00:03,  2.93it/s][A
-Timestep:  70%|███████   | 21/30 [00:07<00:03,  2.93it/s][A
-Timestep:  73%|███████▎  | 22/30 [00:07<00:02,  2.93it/s][A
-Timestep:  77%|███████▋  | 23/30 [00:07<00:02,  2.93it/s][A
-Timestep:  80%|████████  | 24/30 [00:08<00:02,  2.93it/s][A
-Timestep:  83%|████████▎ | 25/30 [00:08<00:01,  2.93it/s][A
-Timestep:  87%|████████▋ | 26/30 [00:08<00:01,  2.93it/s][A
-Timestep:  90%|█████████ | 27/30 [00:09<00:01,  2.93it/s][A
-Timestep:  93%|█████████▎| 28/30 [00:09<00:00,  2.93it/s][A
-Timestep:  97%|█████████▋| 29/30 [00:09<00:00,  2.93it/s][A
-Timestep: 100%|██████████| 30/30 [00:10<00:00,  2.93it/s][A
-                                                         [AGenerating train split: 351 examples [04:10,  1.90s/ examples]Generating train split: 352 examples [04:10,  1.59s/ examples]Generating train split: 354 examples [04:10,  1.09s/ examples]Generating train split: 356 examples [04:11,  1.30 examples/s]Generating train split: 358 examples [04:11,  1.79 examples/s]Generating train split: 360 examples [04:11,  2.40 examples/s]Generating train split: 361 examples [04:11,  2.79 examples/s]Generating train split: 363 examples [04:11,  3.78 examples/s]Generating train split: 365 examples [04:12,  4.73 examples/s]Generating train split: 367 examples [04:12,  5.64 examples/s]Generating train split: 369 examples [04:12,  6.75 examples/s]
-
- 71%|███████▏  | 5/7 [01:08<00:27, 13.66s/it][A[A
-Timestep:   0%|          | 0/30 [00:00<?, ?it/s][A
-Timestep:   3%|▎         | 1/30 [00:00<00:09,  2.95it/s][A
-Timestep:   7%|▋         | 2/30 [00:00<00:09,  2.93it/s][A
-Timestep:  10%|█         | 3/30 [00:01<00:09,  2.93it/s][A
-Timestep:  13%|█▎        | 4/30 [00:01<00:08,  2.93it/s][A
-Timestep:  17%|█▋        | 5/30 [00:01<00:08,  2.93it/s][A
-Timestep:  20%|██        | 6/30 [00:02<00:08,  2.93it/s][A
-Timestep:  23%|██▎       | 7/30 [00:02<00:07,  2.93it/s][A
-Timestep:  27%|██▋       | 8/30 [00:02<00:07,  2.93it/s][A
-Timestep:  30%|███       | 9/30 [00:03<00:07,  2.93it/s][A
-Timestep:  33%|███▎      | 10/30 [00:03<00:06,  2.93it/s][A
-Timestep:  37%|███▋      | 11/30 [00:03<00:06,  2.93it/s][A
-Timestep:  40%|████      | 12/30 [00:04<00:06,  2.93it/s][A
-Timestep:  43%|████▎     | 13/30 [00:04<00:05,  2.93it/s][A
-Timestep:  47%|████▋     | 14/30 [00:04<00:05,  2.93it/s][A
-Timestep:  50%|█████     | 15/30 [00:05<00:05,  2.93it/s][A
-Timestep:  53%|█████▎    | 16/30 [00:05<00:04,  2.93it/s][A
-Timestep:  57%|█████▋    | 17/30 [00:05<00:04,  2.93it/s][A
-Timestep:  60%|██████    | 18/30 [00:06<00:04,  2.93it/s][A
-Timestep:  63%|██████▎   | 19/30 [00:06<00:03,  2.93it/s][A
-Timestep:  67%|██████▋   | 20/30 [00:06<00:03,  2.93it/s][A
-Timestep:  70%|███████   | 21/30 [00:07<00:03,  2.93it/s][A
-Timestep:  73%|███████▎  | 22/30 [00:07<00:02,  2.93it/s][A
-Timestep:  77%|███████▋  | 23/30 [00:07<00:02,  2.93it/s][A
-Timestep:  80%|████████  | 24/30 [00:08<00:02,  2.93it/s][A
-Timestep:  83%|████████▎ | 25/30 [00:08<00:01,  2.93it/s][A
-Timestep:  87%|████████▋ | 26/30 [00:08<00:01,  2.93it/s][A
-Timestep:  90%|█████████ | 27/30 [00:09<00:01,  2.93it/s][A
-Timestep:  93%|█████████▎| 28/30 [00:09<00:00,  2.93it/s][AGenerating train split: 370 examples [04:22,  6.75 examples/s]
-Timestep:  97%|█████████▋| 29/30 [00:09<00:00,  2.93it/s][A
-Timestep: 100%|██████████| 30/30 [00:10<00:00,  2.92it/s][A
-                                                         [AGenerating train split: 371 examples [04:24,  1.95s/ examples]Generating train split: 373 examples [04:24,  1.38s/ examples]Generating train split: 375 examples [04:24,  1.01 examples/s]Generating train split: 377 examples [04:24,  1.39 examples/s]Generating train split: 379 examples [04:25,  1.89 examples/s]Generating train split: 381 examples [04:25,  2.49 examples/s]Generating train split: 383 examples [04:25,  3.22 examples/s]Generating train split: 385 examples [04:25,  4.07 examples/s]Generating train split: 387 examples [04:25,  5.04 examples/s]Generating train split: 389 examples [04:26,  6.02 examples/s]
-
- 86%|████████▌ | 6/7 [01:21<00:13, 13.66s/it][A[A
-Timestep:   0%|          | 0/30 [00:00<?, ?it/s][A
-Timestep:   3%|▎         | 1/30 [00:00<00:06,  4.49it/s][A
-Timestep:   7%|▋         | 2/30 [00:00<00:06,  4.48it/s][A
-Timestep:  10%|█         | 3/30 [00:00<00:06,  4.48it/s][A
-Timestep:  13%|█▎        | 4/30 [00:00<00:05,  4.47it/s][A
-Timestep:  17%|█▋        | 5/30 [00:01<00:05,  4.47it/s][A
-Timestep:  20%|██        | 6/30 [00:01<00:05,  4.47it/s][A
-Timestep:  23%|██▎       | 7/30 [00:01<00:05,  4.47it/s][A
-Timestep:  27%|██▋       | 8/30 [00:01<00:04,  4.47it/s][A
-Timestep:  30%|███       | 9/30 [00:02<00:04,  4.47it/s][A
-Timestep:  33%|███▎      | 10/30 [00:02<00:04,  4.47it/s][A
-Timestep:  37%|███▋      | 11/30 [00:02<00:04,  4.47it/s][A
-Timestep:  40%|████      | 12/30 [00:02<00:04,  4.47it/s][A
-Timestep:  43%|████▎     | 13/30 [00:02<00:03,  4.47it/s][A
-Timestep:  47%|████▋     | 14/30 [00:03<00:03,  4.47it/s][A
-Timestep:  50%|█████     | 15/30 [00:03<00:03,  4.47it/s][A
-Timestep:  53%|█████▎    | 16/30 [00:03<00:03,  4.47it/s][A
-Timestep:  57%|█████▋    | 17/30 [00:03<00:02,  4.47it/s][A
-Timestep:  60%|██████    | 18/30 [00:04<00:02,  4.47it/s][A
-Timestep:  63%|██████▎   | 19/30 [00:04<00:02,  4.47it/s][A
-Timestep:  67%|██████▋   | 20/30 [00:04<00:02,  4.47it/s][A
-Timestep:  70%|███████   | 21/30 [00:04<00:02,  4.47it/s][A
-Timestep:  73%|███████▎  | 22/30 [00:04<00:01,  4.47it/s][A
-Timestep:  77%|███████▋  | 23/30 [00:05<00:01,  4.47it/s][A
-Timestep:  80%|████████  | 24/30 [00:05<00:01,  4.47it/s][A
-Timestep:  83%|████████▎ | 25/30 [00:05<00:01,  4.47it/s][A
-Timestep:  87%|████████▋ | 26/30 [00:05<00:00,  4.47it/s][A
-Timestep:  90%|█████████ | 27/30 [00:06<00:00,  4.47it/s][A
-Timestep:  93%|█████████▎| 28/30 [00:06<00:00,  4.47it/s][A
-Timestep:  97%|█████████▋| 29/30 [00:06<00:00,  4.47it/s][A
-Timestep: 100%|██████████| 30/30 [00:06<00:00,  4.47it/s][A
-                                                         [AGenerating train split: 391 examples [04:33,  1.29s/ examples]Generating train split: 393 examples [04:34,  1.07 examples/s]Generating train split: 394 examples [04:34,  1.27 examples/s]Generating train split: 396 examples [04:34,  1.81 examples/s]Generating train split: 398 examples [04:34,  2.49 examples/s]Generating train split: 400 examples [04:34,  3.25 examples/s]Generating train split: 402 examples [04:34,  4.16 examples/s]Generating train split: 404 examples [04:35,  5.17 examples/s]
-
-100%|██████████| 7/7 [01:30<00:00, 12.14s/it][A[A100%|██████████| 7/7 [01:30<00:00, 12.98s/it]
-
- 30%|███       | 3/10 [04:35<10:40, 91.46s/it][A
-
-  0%|          | 0/7 [00:00<?, ?it/s][A[A
-Timestep:   0%|          | 0/30 [00:00<?, ?it/s][A
-Timestep:   3%|▎         | 1/30 [00:00<00:09,  2.96it/s][A
-Timestep:   7%|▋         | 2/30 [00:00<00:09,  2.94it/s][A
-Timestep:  10%|█         | 3/30 [00:01<00:09,  2.93it/s][A
-Timestep:  13%|█▎        | 4/30 [00:01<00:08,  2.93it/s][A
-Timestep:  17%|█▋        | 5/30 [00:01<00:08,  2.93it/s][A
-Timestep:  20%|██        | 6/30 [00:02<00:08,  2.93it/s][A
-Timestep:  23%|██▎       | 7/30 [00:02<00:07,  2.93it/s][A
-Timestep:  27%|██▋       | 8/30 [00:02<00:07,  2.93it/s][A
-Timestep:  30%|███       | 9/30 [00:03<00:07,  2.93it/s][A
-Timestep:  33%|███▎      | 10/30 [00:03<00:06,  2.93it/s][A
-Timestep:  37%|███▋      | 11/30 [00:03<00:06,  2.93it/s][A
-Timestep:  40%|████      | 12/30 [00:04<00:06,  2.93it/s][A
-Timestep:  43%|████▎     | 13/30 [00:04<00:05,  2.93it/s][A
-Timestep:  47%|████▋     | 14/30 [00:04<00:05,  2.93it/s][A
-Timestep:  50%|█████     | 15/30 [00:05<00:05,  2.93it/s][A
-Timestep:  53%|█████▎    | 16/30 [00:05<00:04,  2.93it/s][A
-Timestep:  57%|█████▋    | 17/30 [00:05<00:04,  2.93it/s][A
-Timestep:  60%|██████    | 18/30 [00:06<00:04,  2.93it/s][A
-Timestep:  63%|██████▎   | 19/30 [00:06<00:03,  2.93it/s][A
-Timestep:  67%|██████▋   | 20/30 [00:06<00:03,  2.93it/s][A
-Timestep:  70%|███████   | 21/30 [00:07<00:03,  2.93it/s][A
-Timestep:  73%|███████▎  | 22/30 [00:07<00:02,  2.93it/s][A
-Timestep:  77%|███████▋  | 23/30 [00:07<00:02,  2.93it/s][A
-Timestep:  80%|████████  | 24/30 [00:08<00:02,  2.93it/s][A
-Timestep:  83%|████████▎ | 25/30 [00:08<00:01,  2.93it/s][A
-Timestep:  87%|████████▋ | 26/30 [00:08<00:01,  2.93it/s][A
-Timestep:  90%|█████████ | 27/30 [00:09<00:01,  2.93it/s][A
-Timestep:  93%|█████████▎| 28/30 [00:09<00:00,  2.93it/s][A
-Timestep:  97%|█████████▋| 29/30 [00:09<00:00,  2.93it/s][A
-Timestep: 100%|██████████| 30/30 [00:10<00:00,  2.93it/s][A
-                                                         [AGenerating train split: 406 examples [04:47,  1.95s/ examples]Generating train split: 407 examples [04:47,  1.62s/ examples]Generating train split: 409 examples [04:47,  1.11s/ examples]Generating train split: 411 examples [04:47,  1.29 examples/s]Generating train split: 413 examples [04:47,  1.79 examples/s]Generating train split: 415 examples [04:47,  2.42 examples/s]Generating train split: 417 examples [04:48,  3.18 examples/s]Generating train split: 419 examples [04:48,  4.02 examples/s]Generating train split: 421 examples [04:48,  5.01 examples/s]Generating train split: 423 examples [04:48,  5.96 examples/s]Generating train split: 425 examples [04:48,  6.87 examples/s]
-
- 14%|█▍        | 1/7 [00:13<01:21, 13.62s/it][A[A
-Timestep:   0%|          | 0/30 [00:00<?, ?it/s][A
-Timestep:   3%|▎         | 1/30 [00:00<00:09,  2.95it/s][A
-Timestep:   7%|▋         | 2/30 [00:00<00:09,  2.93it/s][A
-Timestep:  10%|█         | 3/30 [00:01<00:09,  2.93it/s][A
-Timestep:  13%|█▎        | 4/30 [00:01<00:08,  2.93it/s][A
-Timestep:  17%|█▋        | 5/30 [00:01<00:08,  2.93it/s][A
-Timestep:  20%|██        | 6/30 [00:02<00:08,  2.93it/s][A
-Timestep:  23%|██▎       | 7/30 [00:02<00:07,  2.93it/s][A
-Timestep:  27%|██▋       | 8/30 [00:02<00:07,  2.93it/s][A
-Timestep:  30%|███       | 9/30 [00:03<00:07,  2.93it/s][A
-Timestep:  33%|███▎      | 10/30 [00:03<00:06,  2.93it/s][A
-Timestep:  37%|███▋      | 11/30 [00:03<00:06,  2.93it/s][A
-Timestep:  40%|████      | 12/30 [00:04<00:06,  2.92it/s][A
-Timestep:  43%|████▎     | 13/30 [00:04<00:05,  2.92it/s][A
-Timestep:  47%|████▋     | 14/30 [00:04<00:05,  2.92it/s][A
-Timestep:  50%|█████     | 15/30 [00:05<00:05,  2.92it/s][A
-Timestep:  53%|█████▎    | 16/30 [00:05<00:04,  2.92it/s][A
-Timestep:  57%|█████▋    | 17/30 [00:05<00:04,  2.93it/s][A
-Timestep:  60%|██████    | 18/30 [00:06<00:04,  2.93it/s][A
-Timestep:  63%|██████▎   | 19/30 [00:06<00:03,  2.93it/s][A
-Timestep:  67%|██████▋   | 20/30 [00:06<00:03,  2.93it/s][A
-Timestep:  70%|███████   | 21/30 [00:07<00:03,  2.93it/s][A
-Timestep:  73%|███████▎  | 22/30 [00:07<00:02,  2.92it/s][A
-Timestep:  77%|███████▋  | 23/30 [00:07<00:02,  2.93it/s][A
-Timestep:  80%|████████  | 24/30 [00:08<00:02,  2.93it/s][A
-Timestep:  83%|████████▎ | 25/30 [00:08<00:01,  2.93it/s][A
-Timestep:  87%|████████▋ | 26/30 [00:08<00:01,  2.93it/s][A
-Timestep:  90%|█████████ | 27/30 [00:09<00:01,  2.92it/s][A
-Timestep:  93%|█████████▎| 28/30 [00:09<00:00,  2.93it/s][A
-Timestep:  97%|█████████▋| 29/30 [00:09<00:00,  2.93it/s][A
-Timestep: 100%|██████████| 30/30 [00:10<00:00,  2.93it/s][A
-                                                         [AGenerating train split: 427 examples [05:00,  1.90s/ examples]Generating train split: 428 examples [05:00,  1.59s/ examples]Generating train split: 430 examples [05:01,  1.09s/ examples]Generating train split: 432 examples [05:01,  1.31 examples/s]Generating train split: 434 examples [05:01,  1.82 examples/s]Generating train split: 436 examples [05:01,  2.43 examples/s]Generating train split: 438 examples [05:01,  3.21 examples/s]Generating train split: 440 examples [05:02,  4.14 examples/s]Generating train split: 442 examples [05:02,  5.11 examples/s]Generating train split: 444 examples [05:02,  6.20 examples/s]
-
- 29%|██▊       | 2/7 [00:27<01:08, 13.61s/it][A[A
-Timestep:   0%|          | 0/30 [00:00<?, ?it/s][A
-Timestep:   3%|▎         | 1/30 [00:00<00:09,  2.95it/s][A
-Timestep:   7%|▋         | 2/30 [00:00<00:09,  2.94it/s][A
-Timestep:  10%|█         | 3/30 [00:01<00:09,  2.93it/s][A
-Timestep:  13%|█▎        | 4/30 [00:01<00:08,  2.93it/s][A
-Timestep:  17%|█▋        | 5/30 [00:01<00:08,  2.93it/s][A
-Timestep:  20%|██        | 6/30 [00:02<00:08,  2.93it/s][A
-Timestep:  23%|██▎       | 7/30 [00:02<00:07,  2.93it/s][A
-Timestep:  27%|██▋       | 8/30 [00:02<00:07,  2.93it/s][A
-Timestep:  30%|███       | 9/30 [00:03<00:07,  2.93it/s][A
-Timestep:  33%|███▎      | 10/30 [00:03<00:06,  2.93it/s][A
-Timestep:  37%|███▋      | 11/30 [00:03<00:06,  2.93it/s][A
-Timestep:  40%|████      | 12/30 [00:04<00:06,  2.93it/s][A
-Timestep:  43%|████▎     | 13/30 [00:04<00:05,  2.93it/s][A
-Timestep:  47%|████▋     | 14/30 [00:04<00:05,  2.93it/s][A
-Timestep:  50%|█████     | 15/30 [00:05<00:05,  2.93it/s][A
-Timestep:  53%|█████▎    | 16/30 [00:05<00:04,  2.93it/s][A
-Timestep:  57%|█████▋    | 17/30 [00:05<00:04,  2.89it/s][A
-Timestep:  60%|██████    | 18/30 [00:06<00:04,  2.90it/s][A
-Timestep:  63%|██████▎   | 19/30 [00:06<00:03,  2.91it/s][A
-Timestep:  67%|██████▋   | 20/30 [00:06<00:03,  2.91it/s][A
-Timestep:  70%|███████   | 21/30 [00:07<00:03,  2.92it/s][A
-Timestep:  73%|███████▎  | 22/30 [00:07<00:02,  2.92it/s][A
-Timestep:  77%|███████▋  | 23/30 [00:07<00:02,  2.92it/s][A
-Timestep:  80%|████████  | 24/30 [00:08<00:02,  2.92it/s][A
-Timestep:  83%|████████▎ | 25/30 [00:08<00:01,  2.92it/s][A
-Timestep:  87%|████████▋ | 26/30 [00:08<00:01,  2.92it/s][A
-Timestep:  90%|█████████ | 27/30 [00:09<00:01,  2.92it/s][A
-Timestep:  93%|█████████▎| 28/30 [00:09<00:00,  2.92it/s][A
-Timestep:  97%|█████████▋| 29/30 [00:09<00:00,  2.92it/s][A
-Timestep: 100%|██████████| 30/30 [00:10<00:00,  2.92it/s][A
-                                                         [AGenerating train split: 445 examples [05:13,  6.20 examples/s]Generating train split: 446 examples [05:14,  1.92s/ examples]Generating train split: 448 examples [05:14,  1.36s/ examples]Generating train split: 450 examples [05:14,  1.02 examples/s]Generating train split: 452 examples [05:14,  1.40 examples/s]Generating train split: 454 examples [05:15,  1.90 examples/s]Generating train split: 456 examples [05:15,  2.51 examples/s]Generating train split: 458 examples [05:15,  3.25 examples/s]Generating train split: 460 examples [05:15,  4.15 examples/s]Generating train split: 462 examples [05:15,  5.24 examples/s]Generating train split: 464 examples [05:15,  6.15 examples/s]
-
- 43%|████▎     | 3/7 [00:40<00:54, 13.59s/it][A[A
-Timestep:   0%|          | 0/30 [00:00<?, ?it/s][A
-Timestep:   3%|▎         | 1/30 [00:00<00:09,  2.94it/s][A
-Timestep:   7%|▋         | 2/30 [00:00<00:09,  2.93it/s][A
-Timestep:  10%|█         | 3/30 [00:01<00:09,  2.93it/s][A
-Timestep:  13%|█▎        | 4/30 [00:01<00:08,  2.93it/s][A
-Timestep:  17%|█▋        | 5/30 [00:01<00:08,  2.93it/s][A
-Timestep:  20%|██        | 6/30 [00:02<00:08,  2.93it/s][A
-Timestep:  23%|██▎       | 7/30 [00:02<00:07,  2.93it/s][A
-Timestep:  27%|██▋       | 8/30 [00:02<00:07,  2.93it/s][A
-Timestep:  30%|███       | 9/30 [00:03<00:07,  2.93it/s][A
-Timestep:  33%|███▎      | 10/30 [00:03<00:06,  2.93it/s][A
-Timestep:  37%|███▋      | 11/30 [00:03<00:06,  2.93it/s][A
-Timestep:  40%|████      | 12/30 [00:04<00:06,  2.93it/s][A
-Timestep:  43%|████▎     | 13/30 [00:04<00:05,  2.93it/s][A
-Timestep:  47%|████▋     | 14/30 [00:04<00:05,  2.93it/s][A
-Timestep:  50%|█████     | 15/30 [00:05<00:05,  2.93it/s][A
-Timestep:  53%|█████▎    | 16/30 [00:05<00:04,  2.93it/s][A
-Timestep:  57%|█████▋    | 17/30 [00:05<00:04,  2.93it/s][A
-Timestep:  60%|██████    | 18/30 [00:06<00:04,  2.93it/s][A
-Timestep:  63%|██████▎   | 19/30 [00:06<00:03,  2.93it/s][A
-Timestep:  67%|██████▋   | 20/30 [00:06<00:03,  2.93it/s][A
-Timestep:  70%|███████   | 21/30 [00:07<00:03,  2.93it/s][A
-Timestep:  73%|███████▎  | 22/30 [00:07<00:02,  2.93it/s][A
-Timestep:  77%|███████▋  | 23/30 [00:07<00:02,  2.93it/s][A
-Timestep:  80%|████████  | 24/30 [00:08<00:02,  2.92it/s][A
-Timestep:  83%|████████▎ | 25/30 [00:08<00:01,  2.93it/s][A
-Timestep:  87%|████████▋ | 26/30 [00:08<00:01,  2.93it/s][A
-Timestep:  90%|█████████ | 27/30 [00:09<00:01,  2.93it/s][A
-Timestep:  93%|█████████▎| 28/30 [00:09<00:00,  2.93it/s][A
-Timestep:  97%|█████████▋| 29/30 [00:09<00:00,  2.93it/s][A
-Timestep: 100%|██████████| 30/30 [00:10<00:00,  2.93it/s][A
-                                                         [AGenerating train split: 466 examples [05:27,  1.90s/ examples]Generating train split: 468 examples [05:28,  1.36s/ examples]Generating train split: 470 examples [05:28,  1.02 examples/s]Generating train split: 472 examples [05:28,  1.40 examples/s]Generating train split: 474 examples [05:28,  1.89 examples/s]Generating train split: 476 examples [05:28,  2.51 examples/s]Generating train split: 478 examples [05:28,  3.23 examples/s]Generating train split: 480 examples [05:29,  4.12 examples/s]Generating train split: 482 examples [05:29,  5.06 examples/s]Generating train split: 484 examples [05:29,  6.00 examples/s]
-
- 57%|█████▋    | 4/7 [00:54<00:40, 13.61s/it][A[A
-Timestep:   0%|          | 0/30 [00:00<?, ?it/s][A
-Timestep:   3%|▎         | 1/30 [00:00<00:09,  2.96it/s][A
-Timestep:   7%|▋         | 2/30 [00:00<00:09,  2.94it/s][A
-Timestep:  10%|█         | 3/30 [00:01<00:09,  2.94it/s][A
-Timestep:  13%|█▎        | 4/30 [00:01<00:08,  2.93it/s][A
-Timestep:  17%|█▋        | 5/30 [00:01<00:08,  2.93it/s][A
-Timestep:  20%|██        | 6/30 [00:02<00:08,  2.93it/s][A
-Timestep:  23%|██▎       | 7/30 [00:02<00:07,  2.93it/s][A
-Timestep:  27%|██▋       | 8/30 [00:02<00:07,  2.93it/s][A
-Timestep:  30%|███       | 9/30 [00:03<00:07,  2.93it/s][A
-Timestep:  33%|███▎      | 10/30 [00:03<00:06,  2.93it/s][A
-Timestep:  37%|███▋      | 11/30 [00:03<00:06,  2.93it/s][A
-Timestep:  40%|████      | 12/30 [00:04<00:06,  2.93it/s][A
-Timestep:  43%|████▎     | 13/30 [00:04<00:05,  2.92it/s][A
-Timestep:  47%|████▋     | 14/30 [00:04<00:05,  2.92it/s][A
-Timestep:  50%|█████     | 15/30 [00:05<00:05,  2.92it/s][A
-Timestep:  53%|█████▎    | 16/30 [00:05<00:04,  2.92it/s][A
-Timestep:  57%|█████▋    | 17/30 [00:05<00:04,  2.92it/s][A
-Timestep:  60%|██████    | 18/30 [00:06<00:04,  2.92it/s][A
-Timestep:  63%|██████▎   | 19/30 [00:06<00:03,  2.92it/s][A
-Timestep:  67%|██████▋   | 20/30 [00:06<00:03,  2.92it/s][A
-Timestep:  70%|███████   | 21/30 [00:07<00:03,  2.92it/s][A
-Timestep:  73%|███████▎  | 22/30 [00:07<00:02,  2.93it/s][A
-Timestep:  77%|███████▋  | 23/30 [00:07<00:02,  2.93it/s][A
-Timestep:  80%|████████  | 24/30 [00:08<00:02,  2.93it/s][A
-Timestep:  83%|████████▎ | 25/30 [00:08<00:01,  2.92it/s][A
-Timestep:  87%|████████▋ | 26/30 [00:08<00:01,  2.92it/s][A
-Timestep:  90%|█████████ | 27/30 [00:09<00:01,  2.92it/s][A
-Timestep:  93%|█████████▎| 28/30 [00:09<00:00,  2.92it/s][A
-Timestep:  97%|█████████▋| 29/30 [00:09<00:00,  2.93it/s][A
-Timestep: 100%|██████████| 30/30 [00:10<00:00,  2.93it/s][A
-                                                         [AGenerating train split: 486 examples [05:41,  1.91s/ examples]Generating train split: 488 examples [05:41,  1.36s/ examples]Generating train split: 490 examples [05:41,  1.02 examples/s]Generating train split: 492 examples [05:42,  1.40 examples/s]Generating train split: 494 examples [05:42,  1.90 examples/s]Generating train split: 496 examples [05:42,  2.52 examples/s]Generating train split: 498 examples [05:42,  3.29 examples/s]Generating train split: 500 examples [05:42,  4.00 examples/s]Generating train split: 502 examples [05:43,  4.86 examples/s]Generating train split: 504 examples [05:43,  5.85 examples/s]
-
- 71%|███████▏  | 5/7 [01:08<00:27, 13.63s/it][A[A
-Timestep:   0%|          | 0/30 [00:00<?, ?it/s][A
-Timestep:   3%|▎         | 1/30 [00:00<00:09,  2.94it/s][A
-Timestep:   7%|▋         | 2/30 [00:00<00:09,  2.93it/s][A
-Timestep:  10%|█         | 3/30 [00:01<00:09,  2.93it/s][A
-Timestep:  13%|█▎        | 4/30 [00:01<00:08,  2.93it/s][A
-Timestep:  17%|█▋        | 5/30 [00:01<00:08,  2.93it/s][A
-Timestep:  20%|██        | 6/30 [00:02<00:08,  2.92it/s][A
-Timestep:  23%|██▎       | 7/30 [00:02<00:07,  2.93it/s][A
-Timestep:  27%|██▋       | 8/30 [00:02<00:07,  2.92it/s][Aslurmstepd-hpc-nodegpu01: error: *** JOB 260 ON hpc-nodegpu01 CANCELLED AT 2025-03-28T16:40:55 ***
