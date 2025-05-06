@@ -36,7 +36,7 @@ The scripts for running the reward models are in the ``reward_models`` folder. E
 python reward_models/compute_human_score.py --dataset_path <dataset_path>
 ```
 #### LLaVA server
-The text alignement evaluation is more complex to run because it needs a llava server.
+The text alignment evaluation is more complex to run because it needs a llava server.
 We followed this github repo https://github.com/kvablack/LLaVA-server to setup this server.
 First, create a new conda environment:
 ```{bash}
