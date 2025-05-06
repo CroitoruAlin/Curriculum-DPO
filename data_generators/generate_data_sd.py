@@ -59,7 +59,7 @@ def main():
                          "prompt": Value("string")})
     dataset = Dataset.from_generator(generator = generate_images,
                                      features = features)
-    dataset_path = f"{config.save_path}/{config.dataset}/{config.subset}/{config.run_name}/"
+    dataset_path = f"{config.save_path}/{config.dataset}/{config.subset}/sd/{config.reward_fn}"
     os.makedirs(dataset_path, exist_ok=True)
     dataset.save_to_disk(dataset_path)
 

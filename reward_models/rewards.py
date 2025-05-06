@@ -8,9 +8,39 @@ import io
 import numpy as np
 import torch
 import time
+import hpsv2
+import os
+from hpsv2 import img_score
+from hpsv2.utils import root_path, hps_version_map
+from hpsv2.src.open_clip import create_model_and_transforms, get_tokenizer
+import huggingface_hub
+def human_score(hps_version="v2.1"):
+    img_score.initialize_model()
+    model = img_score.model_dict['model']
+
+    # check if the checkpoint exists
+    if not os.path.exists(root_path):
+        os.makedirs(root_path)
+    cp = huggingface_hub.hf_hub_download("xswu/HPSv2", hps_version_map[hps_version])
+    checkpoint = torch.load(cp, map_location="cuda")
+    model.load_state_dict(checkpoint['state_dict'])
+    tokenizer = get_tokenizer('ViT-H-14')
+    preprocess_val = img_score.model_dict['preprocess_val']
+    model = model.to("cuda")
+    model.eval()
+    def _fn(images, prompts, metadata):
+        with torch.no_grad():
+            with torch.cuda.amp.autocast():
+                outputs_0 = model(images, prompts)
+                image_features_0, text_features = outputs_0["image_features"], outputs_0["text_features"]
+                logits_per_image = image_features_0 @ text_features.T
+                hps_score_0 = torch.diagonal(logits_per_image).cpu().numpy()
+        return hps_score_0
+    return _fn, preprocess_val, tokenizer
+                
 
 def aesthetic_score():
-    from utils.aesthetic_scorer import AestheticScorer
+    from reward_models.aesthetic_scorer import AestheticScorer
 
     scorer = AestheticScorer(dtype=torch.float32).cuda()
 

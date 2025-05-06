@@ -58,9 +58,9 @@ def process_single_batch(batch, teacher_unet, unet, unet_ref, target_unet, accel
         if noise is None:  
             noise = torch.randn_like(latents)
         # Sample a random timestep for each image t_n ~ U[0, N - k - 1] without bias.
-        topk = noise_scheduler.config.num_train_timesteps // args.sample.num_ddim_timesteps
+        topk = noise_scheduler.config.num_train_timesteps // args.num_ddim_timesteps
         if index is None:
-            index = torch.randint(0, args.sample.num_ddim_timesteps, (bsz,), device=accelerator.device).long()
+            index = torch.randint(0, args.num_ddim_timesteps, (bsz,), device=accelerator.device).long()
     
         start_timesteps = solver.ddim_timesteps[index]
         timesteps = start_timesteps - topk

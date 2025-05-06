@@ -26,8 +26,7 @@ from pathlib import Path
 import accelerate
 
 from config.args_sd import get_config
-from data.dpo_dataset import TextCLNotPairsDataset, HumanCLNotPairsDataset
-from data.pickapic_dataset import PickaPic
+from data.dataset_factory import get_dataset
 import datasets
 import numpy as np
 from PIL import Image
@@ -51,13 +50,9 @@ from diffusers.utils.import_utils import is_xformers_available
 from diffusers.training_utils import cast_training_params
 from peft import LoraConfig
 from peft.utils import get_peft_model_state_dict
-from absl import app, flags
-from ml_collections import config_flags
+from absl import app
 if is_wandb_available():
     import wandb
-FLAGS = flags.FLAGS
-config_flags.DEFINE_config_file("config", "config/dpo_sd.py", "Training configuration.")
-
 
 def log_validation(
     pipeline,
@@ -120,7 +115,7 @@ def import_model_class_from_model_name_or_path(
         raise ValueError(f"{model_class} is not supported.")
 
 
-def main(_):
+def main():
 
     args = get_config()
     
@@ -130,7 +125,7 @@ def main(_):
     accelerator_project_config = ProjectConfiguration(project_dir=args.output_dir, logging_dir=logging_dir)
 
     accelerator = Accelerator(
-        gradient_accumulation_steps=args.train.gradient_accumulation_steps,
+        gradient_accumulation_steps=args.gradient_accumulation_steps,
         mixed_precision=args.mixed_precision,
         log_with="wandb",
         project_config=accelerator_project_config,
@@ -163,29 +158,29 @@ def main(_):
     
     ### START DIFFUSION BOILERPLATE ###
     # Load scheduler, tokenizer and models.
-    noise_scheduler = DDPMScheduler.from_pretrained(args.pretrained.model, 
+    noise_scheduler = DDPMScheduler.from_pretrained(args.pretrained_model, 
                                                     subfolder="scheduler")
     
     tokenizer = CLIPTokenizer.from_pretrained(
-            args.pretrained.model, subfolder="tokenizer", revision=args.pretrained.revision
+            args.pretrained_model, subfolder="tokenizer", revision=args.revision
         )
 
     
     
     text_encoder = CLIPTextModel.from_pretrained(
-                args.pretrained.model, subfolder="text_encoder", revision=args.pretrained.revision
+                args.pretrained_model, subfolder="text_encoder", revision=args.revision
             )
 
     vae = AutoencoderKL.from_pretrained(
-            args.pretrained.model, subfolder="vae", revision=args.pretrained.revision
+            args.pretrained_model, subfolder="vae", revision=args.revision
     )
     # clone of model
     ref_unet = UNet2DConditionModel.from_pretrained(
-            args.pretrained.model,
-            subfolder="unet", revision=args.pretrained.revision
+            args.pretrained_model,
+            subfolder="unet", revision=args.revision
         )
     unet = UNet2DConditionModel.from_pretrained(
-        args.pretrained.model, subfolder="unet", revision=args.pretrained.revision
+        args.pretrained_model, subfolder="unet", revision=args.revision
     )
 
     # Freeze vae, text_encoder(s), reference unet
@@ -197,8 +192,8 @@ def main(_):
         param.requires_grad_(False)
 
     unet_lora_config = LoraConfig(
-        r=args.lora.rank,
-        lora_alpha=args.lora.rank,
+        r=args.lora_rank,
+        lora_alpha=args.lora_rank,
         init_lora_weights="gaussian",
         target_modules=["to_k", "to_q", "to_v", "to_out.0"],
     )
@@ -227,13 +222,13 @@ def main(_):
 
     optimizer = torch.optim.AdamW(
             unet.parameters(),
-            lr=args.train.learning_rate,
-            betas=(args.train.adam_beta1, args.train.adam_beta2),
-            weight_decay=args.train.adam_weight_decay,
-            eps=args.train.adam_epsilon,
+            lr=args.learning_rate,
+            betas=(args.adam_beta1, args.adam_beta2),
+            weight_decay=args.adam_weight_decay,
+            eps=args.adam_epsilon,
         )
 
-    dataset = PickaPic(groups=args.no_chunks)#TextCLNotPairsDataset(args)#PickaPic(groups=args.no_chunks)#TextCLNotPairsDataset(args)#HumanCLNotPairsDataset(args)
+    dataset = get_dataset(args)
 
     # Preprocessing the datasets.
     # We need to tokenize input captions and transform the images.
@@ -303,7 +298,7 @@ def main(_):
         train_dataset,
         shuffle=True,
         collate_fn=collate_fn,
-        batch_size=args.train.batch_size,
+        batch_size=args.train_batch_size,
         num_workers=8,
         drop_last=False
     )
@@ -311,15 +306,15 @@ def main(_):
     
     # Scheduler and math around the number of training steps.
     overrode_max_train_steps = False
-    num_update_steps_per_epoch = math.ceil(len(train_dataloader) / args.train.gradient_accumulation_steps)
+    num_update_steps_per_epoch = math.ceil(len(train_dataloader) / args.gradient_accumulation_steps)
     if args.max_train_steps is None:
         args.max_train_steps = args.num_epochs * num_update_steps_per_epoch
         overrode_max_train_steps = True
 
     lr_scheduler = get_scheduler(
-        args.train.lr_scheduler,
+        args.lr_scheduler,
         optimizer=optimizer,
-        num_warmup_steps=args.train.lr_warmup_steps * accelerator.num_processes,
+        num_warmup_steps=args.lr_warmup_steps * accelerator.num_processes,
         num_training_steps=args.max_train_steps * accelerator.num_processes,
     )
 
@@ -349,7 +344,7 @@ def main(_):
     
     
     # We need to recalculate our total training steps as the size of the training dataloader may have changed.
-    num_update_steps_per_epoch = math.ceil(len(train_dataloader) / args.train.gradient_accumulation_steps)
+    num_update_steps_per_epoch = math.ceil(len(train_dataloader) / args.gradient_accumulation_steps)
     if overrode_max_train_steps:
         args.max_train_steps = args.num_epochs * num_update_steps_per_epoch
     # Afterwards we recalculate our number of training epochs
@@ -362,14 +357,14 @@ def main(_):
         accelerator.init_trackers(args.run_name, tracker_config)
 
     # Training initialization
-    total_batch_size = args.train.batch_size * accelerator.num_processes * args.train.gradient_accumulation_steps
+    total_batch_size = args.train_batch_size * accelerator.num_processes * args.gradient_accumulation_steps
 
     logger.info("***** Running training *****")
     logger.info(f"  Num examples = {len(train_dataset)}")
     logger.info(f"  Num Epochs = {args.num_epochs}")
-    logger.info(f"  Instantaneous batch size per device = {args.train.batch_size}")
+    logger.info(f"  Instantaneous batch size per device = {args.train_batch_size}")
     logger.info(f"  Total train batch size (w. parallel, distributed & accumulation) = {total_batch_size}")
-    logger.info(f"  Gradient Accumulation steps = {args.train.gradient_accumulation_steps}")
+    logger.info(f"  Gradient Accumulation steps = {args.gradient_accumulation_steps}")
     logger.info(f"  Total optimization steps = {args.max_train_steps}")
     global_step = 0
     first_epoch = 0
@@ -463,21 +458,21 @@ def main(_):
                 #### END LOSS COMPUTATION ###
                     
                 # Gather the losses across all processes for logging 
-                avg_loss = accelerator.gather(loss.repeat(args.train.batch_size)).mean()
-                train_loss += avg_loss.item() / args.train.gradient_accumulation_steps
+                avg_loss = accelerator.gather(loss.repeat(args.train_batch_size)).mean()
+                train_loss += avg_loss.item() / args.gradient_accumulation_steps
                 # Also gather:
                 # - model MSE vs reference MSE (useful to observe divergent behavior)
                 # - Implicit accuracy
                 
-                avg_model_mse = accelerator.gather(raw_model_loss.repeat(args.train.batch_size)).mean().item()
-                avg_ref_mse = accelerator.gather(raw_ref_loss.repeat(args.train.batch_size)).mean().item()
+                avg_model_mse = accelerator.gather(raw_model_loss.repeat(args.train_batch_size)).mean().item()
+                avg_ref_mse = accelerator.gather(raw_ref_loss.repeat(args.train_batch_size)).mean().item()
                 avg_acc = accelerator.gather(implicit_acc).mean().item()
-                implicit_acc_accumulated += avg_acc / args.train.gradient_accumulation_steps
+                implicit_acc_accumulated += avg_acc / args.gradient_accumulation_steps
 
                 # Backpropagate
                 accelerator.backward(loss)
                 if accelerator.sync_gradients:
-                    accelerator.clip_grad_norm_(unet.parameters(), args.train.max_grad_norm)
+                    accelerator.clip_grad_norm_(unet.parameters(), args.max_grad_norm)
                 optimizer.step()
                 lr_scheduler.step()
                 optimizer.zero_grad()
@@ -514,25 +509,25 @@ def main(_):
                 if global_step % args.validation_steps == 0:
                     # create pipeline
                     pipeline = StableDiffusionPipeline.from_pretrained(
-                        args.pretrained.model,
+                        args.pretrained_model,
                         unet=accelerator.unwrap_model(unet),
-                        revision=args.pretrained.revision,
+                        revision=args.revision,
                         torch_dtype=weight_dtype,
                     )
-                    prompts = random.sample(dataset.prompts, args.num_validation_images)
+                    prompts = random.sample(dataset.usable_prompts, args.num_validation_images)
                     log_validation(pipeline, args, accelerator, prompts, model_type="unet")
                     del pipeline
                     torch.cuda.empty_cache()
                     pipeline = StableDiffusionPipeline.from_pretrained(
-                        args.pretrained.model,
+                        args.pretrained_model,
                         unet=ref_unet,
-                        revision=args.pretrained.revision,
+                        revision=args.revision,
                         torch_dtype=weight_dtype,
                     )
                     log_validation(pipeline, args, accelerator, prompts, model_type="unet_ref")
                     del pipeline
                     torch.cuda.empty_cache()
-                if global_step % args.cl_update_steps == 0 and global_step!=0:
+                if global_step % args.update_frequency == 0 and global_step!=0:
                     train_dataloader.dataset.update_cl()
                     num_update_steps_per_epoch = math.ceil(len(train_dataloader.dataset) / total_batch_size)
                     if overrode_max_train_steps:
@@ -584,4 +579,4 @@ def main(_):
 
 
 if __name__ == "__main__":    
-    app.run(main)
+    main()

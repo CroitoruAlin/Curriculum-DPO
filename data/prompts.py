@@ -10,6 +10,8 @@ def get_prompts(dataset, args):
     elif dataset == 'drawbench':
         return get_drawbench_prompts(args.data_dir, args.subset)
     else:
+        if args.reward_fn =="aesthetic_score":
+            return all_nouns()
         return all_nouns_activities()
 
 def get_pickapic_prompts(data_dir, subset='test'):
@@ -31,6 +33,12 @@ def all_nouns_activities(nouns_file='assets/simple_animals.txt', activities_file
             list_all_prompts.append(f"{IE.a(noun)} {activity}")
     return list_all_prompts
 
+def all_nouns(nouns_file='assets/simple_animals.txt'):
+    nouns = _load_lines(nouns_file)
+    list_all_prompts = []
+    for noun in nouns:
+        list_all_prompts.append(f"A photo of {IE.a(noun)}")
+    return list_all_prompts
 def _load_lines(path):
     """
     Load lines from a file.

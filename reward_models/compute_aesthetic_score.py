@@ -1,11 +1,15 @@
-from config.args_sd import get_config
-from data.pickapic_dataset import PickaPicForScoring
+import sys
+import os
+
+current_dir = os.getcwd()
+if current_dir not in sys.path:
+    sys.path.append(current_dir)
 from rewards import aesthetic_score
 from tqdm import tqdm
 import numpy as np
 from datasets import Dataset, load_from_disk
 from torch.utils.data import DataLoader
-
+from PIL import Image
 import argparse
 reward_fn = aesthetic_score()
 
@@ -15,8 +19,8 @@ def score_paired_ds(args):
     dataset = load_from_disk(args.dataset_path).with_format('torch')
     dataloader = DataLoader(dataset, batch_size=args.batch_size, num_workers=8, shuffle=False)
     for  entry in tqdm(dataloader):
-            image_0 = entry.get("jpg_0", entry['image_0'])
-            image_1 = entry.get("jpg_1", entry['image_1'])
+            image_0 = entry.get("jpg_0", entry['image_0']) /255.
+            image_1 = entry.get("jpg_1", entry['image_1']) /255.
             prompts = entry.get("caption", entry['prompt'])
             scores_0, _ = reward_fn(image_0, prompts, [])
             scores_1, _ = reward_fn(image_1, prompts, [])
@@ -34,19 +38,20 @@ def score_paired_ds(args):
 
 def score_ds(args):
     prompts = []
-    dict_result = {"image_score":[]}
+    dict_result = {"score":[]}
     dataset = load_from_disk(args.dataset_path).with_format('torch')
-    dataloader = DataLoader(dataset, batch_size=args.batch_size, num_workers=8, shuffle=False)
+    dataloader = DataLoader(dataset, batch_size=args.batch_size, num_workers=4, shuffle=False)
     for  entry in tqdm(dataloader):
-            images = entry['image']
+            images = entry['image'] /255.
             prompts = entry['prompt']
             scores, _ = reward_fn(images, prompts, [])
-            for i, score in enumerate(scores):
+            for i, score in enumerate(scores.cpu().numpy()):
                 dict_result["score"].append(score)
             images = []
             prompts = []
     score_ds = Dataset.from_dict(dict_result)
-    score_ds.save_to_disk()
+    os.makedirs(args.save_path, exist_ok=True)
+    score_ds.save_to_disk(args.save_path)
         
     print("Average: ", np.mean(dict_result["score"]))
 
@@ -58,6 +63,9 @@ if __name__ =="__main__":
     parser.add_argument("--save_path", type=str, default="scores")
     parser.add_argument("--dataset_path", type=str, default="datasets/drawbench/test/sd")
     args = parser.parse_args()
-    score_ds(args)
+    if 'pickapic' in args.dataset_path:
+        score_paired_ds(args)
+    else:
+        score_ds(args)
     
 

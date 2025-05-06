@@ -7,7 +7,6 @@ def get_config(argv=None):
     # ===== Curriculum DPO parameters ===== 
     parser.add_argument("--no_chunks", type=int, default=6)
     parser.add_argument("--run_type", type=str, default="dpo")
-    parser.add_argument("--score_dir", type=str, default=None)
     parser.add_argument("--update_frequency", type=int, default=500)
     
     # ===== DPO parameters =====
@@ -26,7 +25,7 @@ def get_config(argv=None):
     parser.add_argument("--snr_gamma", type=float, default=None)
     parser.add_argument("--checkpointing_steps", type=int, default=2000)
     parser.add_argument("--checkpoints_total_limit", type=int, default=5)
-    parser.add_argument("--validation_steps", type=int, default=1000)
+    parser.add_argument("--validation_steps", type=int, default=100)
     parser.add_argument("--num_validation_images", type=int, default=10)
     parser.add_argument("--proportion_empty_prompts", type=float, default=0.25)
     
@@ -73,14 +72,16 @@ def get_config(argv=None):
     # prompt function to use. see `prompts.py` for available prompt functions.
     parser.add_argument("--prompt_fn", type=str, default="nouns_activities")
     parser.add_argument("--reward_fn", type=str, default="llava_bertscore")
+    parser.add_argument("--prompt", type=str, default="A red car")
     
     #===== Data set name =====
     parser.add_argument("--dataset", type=str, default="pickapic", choices=['pickapic', 'drawbench', 'animals'],)
     parser.add_argument("--subset", type=str, default="test", choices=['train', 'test'],)
     parser.add_argument("--data_dir", type=str, default=None)
-    parser.add_argument("--no_generated_images_per_prompt", type=int, default=10)
+    parser.add_argument("--score_dir", type=str, default=None)
+    parser.add_argument("--no_generated_images_per_prompt", type=int, default=50)
     parser.add_argument("--save_path", type=str, default="datasets")
-    parser.add_argument("--load_path", type=str, default="datasets")
+
     if argv is not None:
         args = parser.parse_args(argv[1:])
     else:
@@ -88,12 +89,8 @@ def get_config(argv=None):
     if args.subset=='train':
         args.no_generated_images_per_prompt=500
     else:
-        if args.dataset!='drawbech':
-            args.no_generated_images_per_prompt=10
-        else:
-            args.no_generated_images_per_prompt=500
+        args.no_generated_images_per_prompt=10
     args.tracker_project_name = args.run_name
     args.output_dir = f"experiments/{args.run_name}"
-    args.score_dir = f"scores/{args.dataset}/{args.run_name}/"
     return args
     
