@@ -1,9 +1,29 @@
-# Curriculum-DPO
-Curriculum Direct Preference Optimization for Diffusion and Consistency Models
+# Curriculum Direct Preference Optimization for Diffusion and Consistency Models - CVPR 2025
 
+This is the official repository of the paper "Curriculum Direct Preference Optimization for Diffusion and Consistency Models", accepted at CVPR 2025.
 
 <a href='https://croitorualin.github.io/cl-dpo/'><img src='https://img.shields.io/badge/Project-Page-Green'></a>
 <a href='https://arxiv.org/pdf/2405.13637'><img src='https://img.shields.io/badge/Paper-Arxiv-red'></a>
+
+## License
+
+The code is published under the [CC BY-NC-SA 4.0 license](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en).
+
+## Citation
+
+This repository contains the necessary code to run the experiments in the paper "Curriculum Direct Preference Optimization for Diffusion and Consistency Models". If you use this code in your research, please cite the corresponding paper:
+
+Florinel Alin Croitoru, Vlad Hondru, Radu Tudor Ionescu, Nicu Sebe, Mubarak Shah. Curriculum Direct Preference Optimization for Diffusion and Consistency Models. In Proceedings of CVPR (2025).
+
+Bibtex:
+```
+@inproceedings{Croitoru-CVPR-2025,
+      title={Curriculum Direct Preference Optimization for Diffusion and Consistency Models}, 
+      author={Florinel Alin Croitoru and Vlad Hondru and Radu Tudor Ionescu and Nicu Sebe and Mubarak Shah},
+      year={2025},
+      booktitle={Proceedings of CVPR}
+}
+```
 
 ## Environment
 ```{bash}
@@ -71,12 +91,4 @@ accelerate launch train_lcm.py --data_dir <dataset_path> --score_dir <path_to_th
 accelerate launch train_stablediffusion.py --data_dir <dataset_path> --score_dir <path_to_the_folder_where_the_scores_are_stored> --dataset <type_of_dataset> # type_of_dataset can be drawbench/animals/pickapic
 ```
 
-## Citation
-```
-@inproceedings{Croitoru-CVPR-2025,
-      title={Curriculum Direct Preference Optimization for Diffusion and Consistency Models}, 
-      author={Florinel Alin Croitoru and Vlad Hondru and Radu Tudor Ionescu and Nicu Sebe and Mubarak Shah},
-      year={2025},
-      booktitle={Proceedings of CVPR}
-}
-```
+
