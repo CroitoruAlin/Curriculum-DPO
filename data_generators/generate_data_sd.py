@@ -54,6 +54,8 @@ def main():
                 prompts = all_prompts[start_index:start_index+batch_size]
                 images = pipeline(prompt=prompts, num_inference_steps=config.num_steps, output_type="pil", height=config.resolution, width=config.resolution).images
                 for i, image in enumerate(images):
+                    if not os.path.exists("result.png"):
+                        image.save("result.png")
                     yield {"image": image, "prompt": prompts[i]}
     features = Features({"image": Image(),
                          "prompt": Value("string")})

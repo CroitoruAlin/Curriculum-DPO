@@ -80,7 +80,7 @@ def get_config(argv=None):
     parser.add_argument("--data_dir", type=str, default=None)
     parser.add_argument("--score_dir", type=str, default=None)
     parser.add_argument("--no_generated_images_per_prompt", type=int, default=50)
-    parser.add_argument("--save_path", type=str, default="datasets")
+    parser.add_argument("--save_path", type=str, default="datasets_baseline")
 
     if argv is not None:
         args = parser.parse_args(argv[1:])
@@ -89,7 +89,7 @@ def get_config(argv=None):
     if args.subset=='train':
         args.no_generated_images_per_prompt=500
     else:
-        args.no_generated_images_per_prompt=10
+        args.no_generated_images_per_prompt=30
     args.tracker_project_name = args.run_name
     args.output_dir = f"experiments/{args.run_name}"
     return args

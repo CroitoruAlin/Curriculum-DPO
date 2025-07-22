@@ -13,7 +13,7 @@ def get_config(argv=None):
     parser.add_argument("--beta", type=int, default=200)
 
     # ===== Hyperparameters =====
-    parser.add_argument("--resolution", type=int, default=768)
+    parser.add_argument("--resolution", type=int, default=512)
     parser.add_argument("--center_crop", type=bool, default=True)
     parser.add_argument("--random_flip", type=bool, default=True)
     parser.add_argument("--random_crop", type=bool, default=False)
@@ -96,7 +96,7 @@ def get_config(argv=None):
     if args.subset=='train':
         args.no_generated_images_per_prompt=500
     else:
-        args.no_generated_images_per_prompt=10
+        args.no_generated_images_per_prompt=30
     args.tracker_project_name = args.run_name
     args.output_dir = f"experiments/{args.run_name}"
     return args
