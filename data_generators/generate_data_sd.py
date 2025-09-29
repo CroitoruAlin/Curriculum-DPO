@@ -42,8 +42,11 @@ def main():
     pipeline.scheduler = DDIMScheduler.from_config(pipeline.scheduler.config)
 
     # prepare prompts
-    all_prompts = get_prompts(config.dataset, config)
-    print(f"Number of prompts: {len(all_prompts)}")
+    if config.generate_negative_samples:
+        all_prompts, all_negative_prompts = get_prompts(config.dataset, config)
+    else:
+        all_prompts = get_prompts(config.dataset, config)
+        print(f"Number of prompts: {len(all_prompts)}")
     batch_size=config.sample_batch_size
 
     pipeline.unet.eval()
@@ -54,9 +57,37 @@ def main():
                 prompts = all_prompts[start_index:start_index+batch_size]
                 images = pipeline(prompt=prompts, num_inference_steps=config.num_steps, output_type="pil", height=config.resolution, width=config.resolution).images
                 for i, image in enumerate(images):
-                    yield {"image": image, "prompt": prompts[i]}
-    features = Features({"image": Image(),
-                         "prompt": Value("string")})
+                    yield {"image": image, "prompt": prompts[i], "degradation": "None", "mask_ratio": 0.0}
+                    
+                # Mask input text embedding:
+                if True:
+                    for mask_ratio in [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]:
+                        images = pipeline(prompt=prompts, num_inference_steps=config.num_steps, mask_ratio=mask_ratio, output_type="pil", height=config.resolution, width=config.resolution).images
+                        for i, image in enumerate(images):
+                            yield {"image": image, "prompt": prompts[i], "degradation": "None", "mask_ratio": mask_ratio}
+                    
+                if config.generate_negative_samples:
+                    images = pipeline(prompt=prompts, num_inference_steps=config.num_steps // 2, output_type="pil", height=config.resolution, width=config.resolution).images
+                    for i, image in enumerate(images):
+                        yield {"image": image, "prompt": prompts[i], "degradation": "half_steps"}
+                    
+            if config.generate_negative_samples:
+                for degradation, negative_prompts in all_negative_prompts.items():
+                    for start_index in tqdm(range(0, len(negative_prompts), batch_size)):
+                        #################### SAMPLING ####################
+                        prompts = negative_prompts[start_index:start_index+batch_size]
+                        images = pipeline(prompt=prompts, num_inference_steps=config.num_steps, output_type="pil", height=config.resolution, width=config.resolution).images
+                        for i, image in enumerate(images):
+                            yield {"image": image, "prompt": prompts[i], "degradation": degradation}
+
+    features = Features(
+        {
+            "image": Image(),
+            "prompt": Value("string"),
+            "degradation": Value("string"),
+            "mask_ratio": Value("float16")
+        }
+    )
     dataset = Dataset.from_generator(generator = generate_images,
                                      features = features)
     dataset_path = f"{config.save_path}/{config.dataset}/{config.subset}/sd/{config.reward_fn}"

@@ -1,8 +1,11 @@
-import numpy as np
-from torch.utils.data import Dataset
-from datasets import load_dataset, load_from_disk
-from PIL import Image
 import io
+import random
+from collections import defaultdict
+from PIL import Image
+
+import numpy as np
+from datasets import load_dataset, load_from_disk
+from torch.utils.data import Dataset
 from tqdm import tqdm
 
 def decide_threshold(reward_type):
@@ -17,7 +20,6 @@ def decide_threshold(reward_type):
     
 
 class EntryInfo:
-
     def __init__(self, index, score, prompt):
         self.index = index
         self.score = score
@@ -111,6 +113,82 @@ class PromptsDataset(Dataset):
        
     def set_transform(self, transform):
         self.transform = transform
+        
+class PromptsDatasetV2(Dataset):
+    def __init__(self, data_dir="datasets/drawbench/{}/sd", split='train'):
+        self.paths = []
+        self.prompts = []
+        
+        self.split = split
+        self.dataset = load_from_disk(data_dir.format(split))
+        
+        self._current_mask_ratio = 0.9
+        self.lose_dataset = self.dataset.filter(lambda x: round(float(x), 1) >= self._current_mask_ratio, input_columns=["mask_ratio"])
+        
+        self.win_dataset = self.dataset.filter(lambda x: round(float(x), 1) == 0.0, input_columns=["mask_ratio"])
+        self.prompt_to_w_samples = defaultdict(list)
+        for i,prompt in enumerate(self.win_dataset["prompt"]):
+            self.prompt_to_w_samples[prompt].append(i)
+            
+        self.compute_pairs()
+        
+        self.transform = None
+        
+    def compute_pairs(self):
+        # Build the pairs
+        prompt_to_l_samples = defaultdict(list)
+        for i,prompt in enumerate(self.lose_dataset["prompt"]):
+            prompt_to_l_samples[prompt].append(i)
+            
+        self.pairs = []
+        for prompt in prompt_to_l_samples:
+            losing_indices = prompt_to_l_samples[prompt]
+            winning_indices = self.prompt_to_w_samples[prompt]
+            
+            duplicate_n = len(losing_indices) // len(winning_indices)
+            winning_indices = winning_indices * duplicate_n
+            random.shuffle(winning_indices)
+            
+            for ind_W, ind_l in zip(winning_indices,losing_indices):
+                self.pairs.append((ind_W, ind_l, prompt))
+
+        random.shuffle(self.pairs)
+
+    def update_cl(self):
+        self._current_mask_ratio = max(self._current_mask_ratio - 0.1, 0.1)
+        
+        self.lose_dataset = self.dataset.filter(lambda x: round(float(x), 1) >= self._current_mask_ratio, input_columns=["mask_ratio"])
+        
+        self.compute_pairs()
+    
+    def use_entire_ds(self):
+        self._current_mask_ratio = 0.1
+        
+        self.lose_dataset = self.dataset.filter(lambda x: round(float(x), 1) >= self._current_mask_ratio, input_columns=["mask_ratio"])
+        
+        self.compute_pairs()
+    
+    def __len__(self):
+        return len(self.pairs)
+
+    def __getitem_without_transform(self, ind):
+        win_ind, lose_ind, prompt = self.pairs[ind]
+        
+        win_sample = self.win_dataset[win_ind]
+        lose_sample = self.lose_dataset[lose_ind]
+        
+        assert win_sample["prompt"] == lose_sample["prompt"] == prompt
+        
+        return win_sample["image"], lose_sample["image"], prompt
+        
+    def __getitem__(self, ind):
+        image_w, image_l, prompt = self.__getitem_without_transform(ind)
+        if self.transform is not None:
+            return self.transform(image_w, image_l, prompt)
+        return image_w, image_l, prompt
+       
+    def set_transform(self, transform):
+        self.transform = transform
 
 
 class PickaPic(Dataset):
@@ -190,9 +268,12 @@ class PickaPic(Dataset):
        
     def set_transform(self, transform):
         self.transform = transform        
+
 def get_dataset(args):
     if args.dataset=='pickapic':
         return PickaPic(data_dir = args.data_dir, score_dir=args.score_dir, split=args.subset, groups=args.no_chunks, reward=args.reward_fn)
+    elif args.dataset == "implicit_reward":
+        return PromptsDatasetV2(data_dir = args.data_dir, split=args.split)
     else:
         return PromptsDataset(data_dir = args.data_dir, score_dir=args.score_dir, split=None, groups=args.no_chunks, reward=args.reward_fn)
 
@@ -203,9 +284,19 @@ if __name__ == "__main__":
     # image_1.save("sample_1.png")
     # image_2.save("sample_2.png")
     # print(prompt)
-    dataset = PickaPic(data_dir='/home/fl488644/datasets/pickapic', score_dir="/home/fl488644/Curriculum-DPO/scores/pick_a_pic_scores_human",
-                 split="train", groups = 1, reward="human_score")
-    image_1, image_2, prompt = dataset[10]
-    image_1.save("sample_1.png")
-    image_2.save("sample_2.png")
-    print(prompt)
+    
+    dataset = PromptsDatasetV2(data_dir="/home/eivor/Curriculum-DPO/datasets/animals/{}/sd/llava_bertscore", split="train")
+    for i in range(9):
+        print(f"{round(0.9 - i / 10)}: {len(dataset)}")
+        for j in range(len(dataset)):
+            _ = dataset[j]
+            
+            break
+        dataset.update_cl()
+    
+    # dataset = PickaPic(data_dir='/home/fl488644/datasets/pickapic', score_dir="/home/fl488644/Curriculum-DPO/scores/pick_a_pic_scores_human",
+    #              split="train", groups = 1, reward="human_score")
+    # image_1, image_2, prompt = dataset[10]
+    # image_1.save("sample_1.png")
+    # image_2.save("sample_2.png")
+    # print(prompt)
