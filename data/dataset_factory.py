@@ -132,6 +132,8 @@ class PromptsDatasetV2(Dataset):
             
         self.compute_pairs()
         
+        self.usable_prompts = list(self.prompt_to_w_samples.keys())
+        
         self.transform = None
         
     def compute_pairs(self):
@@ -273,7 +275,7 @@ def get_dataset(args):
     if args.dataset=='pickapic':
         return PickaPic(data_dir = args.data_dir, score_dir=args.score_dir, split=args.subset, groups=args.no_chunks, reward=args.reward_fn)
     elif args.dataset == "implicit_reward":
-        return PromptsDatasetV2(data_dir = args.data_dir, split=args.split)
+        return PromptsDatasetV2(data_dir = args.data_dir, split=args.subset)
     else:
         return PromptsDataset(data_dir = args.data_dir, score_dir=args.score_dir, split=None, groups=args.no_chunks, reward=args.reward_fn)
 

@@ -72,8 +72,10 @@ def score_ds(args):
     prompts = []
     dict_result = {"score":[]}
     dataset = load_from_disk(args.dataset_path)
+    dataset = dataset.filter(lambda x: round(float(x), 1) == 0.0, input_columns=["mask_ratio"])
+    
     dataloader = DataLoader(dataset, batch_size=args.batch_size, num_workers=4, shuffle=False, collate_fn=collate_fn)
-    for  entry in tqdm(dataloader):
+    for entry in tqdm(dataloader):
             images = entry['image']
             prompts = entry['prompt']
             scores = reward_fn(images.to("cuda"), prompts.to("cuda"), [])
@@ -81,9 +83,9 @@ def score_ds(args):
                 dict_result["score"].append(score)
             images = []
             prompts = []
-    score_ds = Dataset.from_dict(dict_result)
-    os.makedirs(args.save_path, exist_ok=True)
-    score_ds.save_to_disk(args.save_path)
+    # score_ds = Dataset.from_dict(dict_result)
+    # os.makedirs(args.save_path, exist_ok=True)
+    # score_ds.save_to_disk(args.save_path)
         
     print("Average: ", np.mean(dict_result["score"]))
 
@@ -93,7 +95,11 @@ if __name__ =="__main__":
     
     parser.add_argument("--batch_size", type=int, default=10)
     parser.add_argument("--save_path", type=str, default="scores/human")
-    parser.add_argument("--dataset_path", type=str, default="datasets/drawbench/test/sd")
+    
+    DATASET_NAME = "drawbench"
+    # INPUT_PATH = f"/mnt/home/fmi2/vladh/data/curr_dpo/datasets/{DATASET_NAME}/test/sd/llava_bertscore"
+    INPUT_PATH = f"/mnt/home/fmi2/vladh/Curriculum-DPO/datasets/{DATASET_NAME}/test/sd/llava_bertscore"
+    parser.add_argument("--dataset_path", type=str, default=INPUT_PATH)
     args = parser.parse_args()
     if 'pickapic' in args.dataset_path:
         score_paired_ds(args)

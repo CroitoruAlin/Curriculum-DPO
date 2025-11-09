@@ -60,7 +60,7 @@ def main():
                     yield {"image": image, "prompt": prompts[i], "degradation": "None", "mask_ratio": 0.0}
                     
                 # Mask input text embedding:
-                if True:
+                if False:
                     for mask_ratio in [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]:
                         images = pipeline(prompt=prompts, num_inference_steps=config.num_steps, mask_ratio=mask_ratio, output_type="pil", height=config.resolution, width=config.resolution).images
                         for i, image in enumerate(images):

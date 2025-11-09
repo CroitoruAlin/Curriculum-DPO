@@ -76,7 +76,7 @@ def get_config(argv=None):
     parser.add_argument("--generate_negative_samples", action='store_true')
     
     #===== Data set name =====
-    parser.add_argument("--dataset", type=str, default="pickapic", choices=['pickapic', 'drawbench', 'animals'],)
+    parser.add_argument("--dataset", type=str, default="pickapic", choices=['pickapic', 'drawbench', 'animals', "implicit_reward"],)
     parser.add_argument("--subset", type=str, default="test", choices=['train', 'test'],)
     parser.add_argument("--data_dir", type=str, default=None)
     parser.add_argument("--score_dir", type=str, default=None)

@@ -421,6 +421,7 @@ def main(args):
     # 8. Add LoRA to the student U-Net, only the LoRA projection matrix will be updated by the optimizer.
     lora_config = LoraConfig(
         r=args.lora_rank,
+        lora_alpha=args.lora_alpha,
         target_modules=[
             "to_q",
             "to_k",
