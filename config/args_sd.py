@@ -20,7 +20,7 @@ def get_config(argv=None):
     parser.add_argument("--random_crop", type=bool, default=False)
     parser.add_argument("--no_hflip", type=bool, default=True)
     parser.add_argument("--max_train_samples", type=int, default=1000000)
-    parser.add_argument("--max_train_steps", type=int, default=None)
+    parser.add_argument("--max_train_steps", type=int, default=20001)
     parser.add_argument("--prediction_type", type=str, default=None)
     parser.add_argument("--snr_gamma", type=float, default=None)
     parser.add_argument("--checkpointing_steps", type=int, default=2000)
@@ -31,7 +31,7 @@ def get_config(argv=None):
     
     # ===== Logging =====
     # run name for wandb logging and checkpoint saving -- if not provided, will be auto-generated based on the datetime.
-    parser.add_argument("--run_name", type=str, default="dpo_text_align_pickapic")
+    parser.add_argument("--wandb_run_name", type=str, default="dpo_text_align_pickapic")
     # top-level logging directory for checkpoint saving.
     parser.add_argument("--logdir", type=str, default="logs")
     parser.add_argument("--output_dir", type=str, default=None)
@@ -52,11 +52,13 @@ def get_config(argv=None):
     # mixed precision training. options are "fp16", "bf16", and "no". half-precision speeds up training significantly.
     parser.add_argument("--mixed_precision", type=str, default="fp16")
     parser.add_argument("--allow_tf32", type=bool, default=True)
-    parser.add_argument("--lora_rank", type=int, default=8)
+    parser.add_argument("--lora_rank", type=int, default=6)
+    parser.add_argument("--max_rank", type=int, default=16)
+    parser.add_argument("--num_lora_blocks", type=int, default=2) # the number of blocks is actually log_2(num_lora_blocks
     # batch size (per GPU!) to use for training.
-    parser.add_argument("--train_batch_size", type=int, default=8)
+    parser.add_argument("--train_batch_size", type=int, default=16)
     # learning rate.
-    parser.add_argument("--learning_rate", type=float, default=1e-4)
+    parser.add_argument("--learning_rate", type=float, default=1e-5)
     parser.add_argument("--lr_scheduler", type=str, default='constant')
     parser.add_argument("--lr_warmup_steps", type=int, default=0)
     parser.add_argument("--adam_beta1", type=float, default=0.9)
@@ -80,17 +82,17 @@ def get_config(argv=None):
     parser.add_argument("--data_dir", type=str, default=None)
     parser.add_argument("--score_dir", type=str, default=None)
     parser.add_argument("--no_generated_images_per_prompt", type=int, default=50)
-    parser.add_argument("--save_path", type=str, default="datasets_baseline")
+    parser.add_argument("--save_path", type=str, default="datasets_finetuned")
 
     if argv is not None:
         args = parser.parse_args(argv[1:])
     else:
         args = parser.parse_args()
     if args.subset=='train':
-        args.no_generated_images_per_prompt=500
+        args.no_generated_images_per_prompt=100
     else:
         args.no_generated_images_per_prompt=30
-    args.tracker_project_name = args.run_name
-    args.output_dir = f"experiments/{args.run_name}"
+    args.tracker_project_name = args.wandb_run_name
+    args.output_dir = f"experiments/{args.wandb_run_name}"
     return args
     

@@ -38,14 +38,18 @@ def human_score(hps_version="v2.1"):
         return hps_score_0
     return _fn, preprocess_val, tokenizer
                 
-
-def aesthetic_score():
+model_cache = {}
+def initialize_aesthetic_model():
     from reward_models.aesthetic_scorer import AestheticScorer
-
-    scorer = AestheticScorer(dtype=torch.float32).cuda()
-
+    if 'aesthetic' not in model_cache:
+        scorer = AestheticScorer(dtype=torch.float32).cuda()
+        model_cache['aesthetic'] = scorer
+    return model_cache['aesthetic']
+def aesthetic_score():
+    
+    scorer = initialize_aesthetic_model()
     def _fn(images, prompts, metadata):
-        images = (images * 255).round().clamp(0, 255).to(torch.uint8)
+        images = (images * 255).round().clamp(0, 255).to(torch.uint8).to("cuda")
         scores = scorer(images)
         return scores, {}
 

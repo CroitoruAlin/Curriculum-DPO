@@ -94,8 +94,9 @@ if __name__ =="__main__":
     parser.add_argument("--batch_size", type=int, default=10)
     parser.add_argument("--save_path", type=str, default="scores/human")
     parser.add_argument("--dataset_path", type=str, default="datasets/drawbench/test/sd")
+    parser.add_argument("--split", type=str, default='train')
     args = parser.parse_args()
-    if 'pickapic' in args.dataset_path:
+    if 'pickapic' in args.dataset_path and args.split=='train':
         score_paired_ds(args)
     else:
         score_ds(args)

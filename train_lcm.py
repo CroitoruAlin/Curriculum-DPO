@@ -43,6 +43,7 @@ from diffusers import (
     LCMScheduler, AutoPipelineForText2Image,
     DiffusionPipeline
 )
+from diffusers.training_utils import cast_training_params
 from diffusers.optimization import get_scheduler
 from diffusers.utils import check_min_version, is_wandb_available
 from diffusers.utils.import_utils import is_xformers_available
@@ -76,6 +77,38 @@ def get_module_kohya_state_dict(module, prefix: str, dtype: torch.dtype, adapter
             kohya_ss_state_dict[alpha_key] = torch.tensor(module.peft_config[adapter_name].lora_alpha).to(dtype)
 
     return kohya_ss_state_dict
+def transfer_lora_weights(old_model, new_model, old_rank, new_rank, logger):
+    logger.info("Transfering lora weights")
+    for name, module in new_model.named_modules():
+        if hasattr(module, "lora_A"):
+            old_A = getattr(old_model.get_submodule(name), "lora_A", None)
+            old_B = getattr(old_model.get_submodule(name), "lora_B", None)
+            # logger.info(type(module.lora_A))
+            if old_A is not None:
+                # print(old_A["dpo"].weight.data.shape, module.lora_A["dpo"].weight.data.shape)
+                module.lora_A["dpo"].weight.data[:old_rank, :] = old_A["dpo"].weight.data
+                module.lora_B["dpo"].weight.data[:, :old_rank] = old_B["dpo"].weight.data
+    return new_model
+
+def reinit_lora(model, new_rank, num_lora_layers):
+    blocks_number = "|".join([str(i)+"\." for i in range(int(math.log2(num_lora_layers)))])
+    # print(blocks_number)
+    # for name, param in model.named_parameters():
+    #     print(name)
+    # exit()
+    config = LoraConfig(
+        r=new_rank, 
+        lora_alpha=new_rank,
+        lora_dropout=0.1,
+        target_modules= f'^((down|up|mid)_(blocks|block)\.({blocks_number}\.)?attentions\.\d+\.transformer_blocks\.0\.(attn1|attn2|ff\.net)\.to_(q|k|v|to_out\.0))|((down|up|mid)_(blocks|block)\.({blocks_number}\.).*conv1)|((down|up|mid)_(blocks|block)\.({blocks_number}\.).*conv2)|((down|up|mid)_(blocks|block)\.({blocks_number}\.).*(upsamplers\.0\.conv))|((down|up|mid)_(blocks|block)\.({blocks_number}\.).*(downsamplers\.0\.conv)).*$'
+    )
+    model = get_peft_model(model, config, adapter_name="dpo")
+    # for name, param in model.named_parameters():
+    #     if param.requires_grad:
+    #         print(name)
+    # exit()
+    # model.print_trainable_parameters()
+    return model
 
 
 
@@ -419,28 +452,31 @@ def main(args):
         )
 
     # 8. Add LoRA to the student U-Net, only the LoRA projection matrix will be updated by the optimizer.
-    lora_config = LoraConfig(
-        r=args.lora_rank,
-        target_modules=[
-            "to_q",
-            "to_k",
-            "to_v",
-            "to_out.0",
-            "proj_in",
-            "proj_out",
-            "ff.net.0.proj",
-            "ff.net.2",
-            "conv1",
-            "conv2",
-            "conv_shortcut",
-            "downsamplers.0.conv",
-            "upsamplers.0.conv",
-            "time_emb_proj",
-        ],
-    )
-    unet = get_peft_model(unet, lora_config, adapter_name='dpo')
+    # lora_config = LoraConfig(
+    #     r=args.lora_rank,
+    #     target_modules=[
+    #         "to_q",
+    #         "to_k",
+    #         "to_v",
+    #         "to_out.0",
+    #         "proj_in",
+    #         "proj_out",
+    #         "ff.net.0.proj",
+    #         "ff.net.2",
+    #         "conv1",
+    #         "conv2",
+    #         "conv_shortcut",
+    #         "downsamplers.0.conv",
+    #         "upsamplers.0.conv",
+    #         "time_emb_proj",
+    #     ],
+    # )
+    # unet = get_peft_model(unet, lora_config, adapter_name='dpo')
  
-    unet.set_adapters(["dpo"])
+    # unet.set_adapters(["dpo"])
+    current_rank = args.lora_rank
+    num_lora_blocks = args.num_lora_blocks
+    unet = reinit_lora(unet, current_rank, num_lora_blocks)
 
     # print([name for name, _ in unet.named_parameters()])
     for name, param in unet.named_parameters():
@@ -488,7 +524,7 @@ def main(args):
                 lora_state_dict = get_peft_model_state_dict(unet_, adapter_name="dpo")
                 StableDiffusionPipeline.save_lora_weights(os.path.join(output_dir, "unet_lora"), lora_state_dict)
                 # save weights in peft format to be able to load them back
-                unet_.save_pretrained(output_dir)
+                # unet_.save_pretrained(output_dir)
 
                 for _, model in enumerate(models):
                     # make sure to pop weight so that corresponding model is not saved again
@@ -543,7 +579,7 @@ def main(args):
         prompt_embeds = encode_prompt(prompt_batch, text_encoder, tokenizer, proportion_empty_prompts, is_train)
         return {"prompt_embeds": prompt_embeds}
 
-    train_dataset = get_dataset(args)
+    train_dataset = get_dataset(args, logger)
     preprocessor = Preprocess(tokenizer, args)
     train_dataloader = torch.utils.data.DataLoader(
         train_dataset,
@@ -588,7 +624,7 @@ def main(args):
     # The trackers initializes automatically on the main process.
     if accelerator.is_main_process:
         tracker_config = dict(vars(args))
-        accelerator.init_trackers(args.run_name, config=tracker_config)
+        accelerator.init_trackers(args.wandb_run_name, config=tracker_config)
 
     uncond_input_ids = tokenizer(
         [""] * args.train_batch_size, return_tensors="pt", padding="max_length", max_length=77
@@ -710,7 +746,10 @@ def main(args):
                                     shutil.rmtree(removing_checkpoint)
 
                         save_path = os.path.join(args.output_dir, f"checkpoint-{global_step}")
-                        accelerator.save_state(save_path)
+                        # accelerator.save_state(save_path)
+                        unet_ = accelerator.unwrap_model(unet)
+                        lora_state_dict = get_peft_model_state_dict(unet_, adapter_name="dpo")
+                        StableDiffusionPipeline.save_lora_weights(os.path.join(save_path, "unet_lora"), lora_state_dict)
                         logger.info(f"Saved state to {save_path}")
 
                     if global_step % args.validation_steps == 0 or global_step in [1, 50, 100, 150, 200, 250]:
@@ -738,6 +777,36 @@ def main(args):
                 # Only show the progress bar once on each machine.
                 disable=not accelerator.is_local_main_process,
                         )
+                if current_rank < args.max_rank or num_lora_blocks<256:
+                        new_rank = min(current_rank*2, args.max_rank)
+                        new_unet = UNet2DConditionModel.from_pretrained(
+                                    args.pretrained_model, subfolder="unet"
+                                )
+                        num_lora_blocks=min(num_lora_blocks*2, 256)
+                        new_unet = reinit_lora(new_unet, new_rank, num_lora_blocks)
+                        transfer_lora_weights(unet, new_unet, old_rank=current_rank, new_rank=new_rank, logger=logger)
+                        optimizer = optimizer_class(
+                                        new_unet.parameters(),
+                                        lr=args.learning_rate,
+                                        betas=(args.adam_beta1, args.adam_beta2),
+                                        weight_decay=args.adam_weight_decay,
+                                        eps=args.adam_epsilon,
+                                    )
+                        unet = None
+                        del unet 
+                        torch.cuda.empty_cache()
+                        new_unet.to(accelerator.device, dtype=weight_dtype)
+                        if args.mixed_precision == "fp16":
+                            # only upcast trainable parameters (LoRA) into fp32
+                            cast_training_params(new_unet, dtype=torch.float32)
+                        
+                        if args.allow_tf32:
+                            torch.backends.cuda.matmul.allow_tf32 = True
+                        unet, optimizer = accelerator.prepare(
+                                                new_unet, optimizer
+                                            )
+                        lr_scheduler.optimizer = optimizer
+                        current_rank = new_rank
             if global_step >= args.max_train_steps:
                 break
         if epoch%1==0:#(args.max_train_steps <= global_step and global_step <args.args.update_frequency):

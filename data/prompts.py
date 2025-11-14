@@ -8,14 +8,14 @@ def get_prompts(dataset, args):
     if dataset == 'pickapic':
         return get_pickapic_prompts(args.data_dir, args.subset)
     elif dataset == 'drawbench':
-        return get_drawbench_prompts(args.data_dir, args.subset)
+        return get_drawbench_prompts(args.data_dir, "test")
     else:
         if args.reward_fn =="aesthetic_score":
             return all_nouns()
         return all_nouns_activities()
 
 def get_pickapic_prompts(data_dir, subset='test'):
-    dataset = load_dataset("yuvalkirstain/pickapic_v1", cache_dir=data_dir, keep_in_memory=False)
+    dataset = load_dataset(data_dir,cache_dir=None, keep_in_memory=False)
     all_prompts = list(set([prompt for prompt in dataset[subset]['caption']]))
     return all_prompts
 

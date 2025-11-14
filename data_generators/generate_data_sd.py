@@ -14,8 +14,8 @@ import tqdm
 from PIL import Image
 from datasets import load_dataset, Features, Image, Value, Dataset
 import safetensors
-
-
+from peft import get_peft_model, PeftModel
+from diffusers.utils import convert_state_dict_to_diffusers
 tqdm = partial(tqdm.tqdm, dynamic_ncols=True)
 
 def main():
@@ -27,7 +27,10 @@ def main():
     pipeline.safety_checker = None
     if config.lora_ckpt is not None:
         state_dict = safetensors.torch.load_file(config.lora_ckpt)
-        pipeline.load_lora_weights(state_dict, adapter_name='dpo')
+        new_state = {}
+        for key in state_dict:
+            new_state[key.replace("unet.base_model.model", "unet")] = state_dict[key]
+        pipeline.load_lora_weights(new_state, adapter_name='dpo')
         pipeline.set_adapters(["dpo"])
         pipeline.fuse_lora()
 

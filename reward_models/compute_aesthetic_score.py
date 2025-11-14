@@ -40,7 +40,7 @@ def score_ds(args):
     prompts = []
     dict_result = {"score":[]}
     dataset = load_from_disk(args.dataset_path).with_format('torch')
-    dataloader = DataLoader(dataset, batch_size=args.batch_size, num_workers=4, shuffle=False)
+    dataloader = DataLoader(dataset, batch_size=args.batch_size, num_workers=8, shuffle=False)
     for  entry in tqdm(dataloader):
             images = entry['image'] /255.
             prompts = entry['prompt']
@@ -59,11 +59,12 @@ def score_ds(args):
 if __name__ =="__main__":
     parser = argparse.ArgumentParser(prog='CL-DPO')
     
-    parser.add_argument("--batch_size", type=int, default=10)
-    parser.add_argument("--save_path", type=str, default="scores")
+    parser.add_argument("--batch_size", type=int, default=4)
+    parser.add_argument("--save_path", type=str, default="scores/sd/baseline_aesthetic")
     parser.add_argument("--dataset_path", type=str, default="datasets/drawbench/test/sd")
+    parser.add_argument("--split", type=str, default='train')
     args = parser.parse_args()
-    if 'pickapic' in args.dataset_path:
+    if 'pickapic' in args.dataset_path and args.split=='train':
         score_paired_ds(args)
     else:
         score_ds(args)
