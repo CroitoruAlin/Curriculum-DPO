@@ -762,7 +762,8 @@ def main(args):
                 "diff_l": torch.mean(loss_pred_l - loss_ref_l)}
             progress_bar.set_postfix(**logs)
             accelerator.log(logs, step=global_step)
-
+            torch.cuda.empty_cache()
+            gc.collect()
             if global_step % args.update_frequency==0:
                 train_dataloader.dataset.update_cl()
                 train_dataloader.num_batches = len(train_dataset) // args.train_batch_size
@@ -785,7 +786,7 @@ def main(args):
                         num_lora_blocks=min(num_lora_blocks*2, 256)
                         new_unet = reinit_lora(new_unet, new_rank, num_lora_blocks)
                         transfer_lora_weights(unet, new_unet, old_rank=current_rank, new_rank=new_rank, logger=logger)
-                        optimizer = optimizer_class(
+                        new_optimizer = optimizer_class(
                                         new_unet.parameters(),
                                         lr=args.learning_rate,
                                         betas=(args.adam_beta1, args.adam_beta2),
@@ -793,8 +794,10 @@ def main(args):
                                         eps=args.adam_epsilon,
                                     )
                         unet = None
-                        del unet 
+                        del unet
+                        del optimizer 
                         torch.cuda.empty_cache()
+                        gc.collect()
                         new_unet.to(accelerator.device, dtype=weight_dtype)
                         if args.mixed_precision == "fp16":
                             # only upcast trainable parameters (LoRA) into fp32
@@ -803,7 +806,7 @@ def main(args):
                         if args.allow_tf32:
                             torch.backends.cuda.matmul.allow_tf32 = True
                         unet, optimizer = accelerator.prepare(
-                                                new_unet, optimizer
+                                                new_unet, new_optimizer
                                             )
                         lr_scheduler.optimizer = optimizer
                         current_rank = new_rank
