@@ -25,7 +25,7 @@ def get_config(argv=None):
     parser.add_argument("--snr_gamma", type=float, default=None)
     parser.add_argument("--checkpointing_steps", type=int, default=2000)
     parser.add_argument("--checkpoints_total_limit", type=int, default=5)
-    parser.add_argument("--validation_steps", type=int, default=100)
+    parser.add_argument("--validation_steps", type=int, default=1000)
     parser.add_argument("--num_validation_images", type=int, default=10)
     parser.add_argument("--proportion_empty_prompts", type=float, default=0.25)
     
@@ -91,7 +91,7 @@ def get_config(argv=None):
     if args.subset=='train':
         args.no_generated_images_per_prompt=100
     else:
-        args.no_generated_images_per_prompt=30
+        args.no_generated_images_per_prompt=10
     args.tracker_project_name = args.wandb_run_name
     args.output_dir = f"experiments/{args.wandb_run_name}"
     return args

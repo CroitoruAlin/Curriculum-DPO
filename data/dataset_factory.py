@@ -8,11 +8,11 @@ import datasets
 
 def decide_threshold(reward_type):
     if reward_type=='llava_bertscore':
-        return 0.02, 0.02
+        return 0.25, 0.05
     elif reward_type=="human_score":
-        return 0.02, 0.18
+        return 0.1, 0.1
     elif reward_type=="aesthetic_score":
-        return 0.4, 4.
+        return 0.8, 4.
     else:
         return 0.1
     
@@ -29,6 +29,7 @@ class PromptsDataset(Dataset):
                  groups=5, split='train', reward='aesthetic_score', ):
         self.paths = []
         self.prompts = []
+        self.logger = logger
         logger.info("Start reading data")
         self.dataset = load_from_disk(data_dir)
         logger.info("Data read")
@@ -79,6 +80,7 @@ class PromptsDataset(Dataset):
             self.thresholds_diff[prompt] = np.linspace(min_diff, max_diff, groups)[::-1]
             self.index_curr[prompt] = 0
             self.usable_pairs[prompt] = self.get_usable_pairs(prompt)
+
         self.transform = None
         self.usable_prompts = list(self.thresholds_diff.keys())
         self.all_usable_pairs = []
@@ -108,8 +110,8 @@ class PromptsDataset(Dataset):
         self.all_usable_pairs = []
         for prompt in self.usable_pairs:
             self.all_usable_pairs.extend(self.usable_pairs[prompt])
-        print(f"Length total pairs = {len(self.all_possible_pairs)}")
-        print(f"Length selected pairs = {len(self.all_usable_pairs)}")
+        self.logger.info(f"Length total pairs = {len(self.all_possible_pairs)}")
+        self.logger.info(f"Length selected pairs = {len(self.all_usable_pairs)}")
     
     def use_entire_ds(self, prompt):
         self.index_curr[prompt] = len(self.thresholds_diff)-2
@@ -127,14 +129,14 @@ class PromptsDataset(Dataset):
         image2 = self.dataset[index_2]['image']
         
         if score2 > score1:
-            return image2, image1, " ".join(prompt.split("_"))
+            return image2, image1, " ".join(prompt.split("_")), score2, score1
         else:
-            return image1, image2, " ".join(prompt.split("_"))
+            return image1, image2, " ".join(prompt.split("_")), score1, score2
     def __getitem__(self, ind):
-        image_w, image_l, prompt = self.__getitem_without_transform(ind)
+        image_w, image_l, prompt, s_w, s_l = self.__getitem_without_transform(ind)
         if self.transform is not None:
             return self.transform(image_w, image_l, prompt)
-        return image_w, image_l, prompt
+        return image_w, image_l, prompt, s_w, s_l
        
     def set_transform(self, transform):
         self.transform = transform

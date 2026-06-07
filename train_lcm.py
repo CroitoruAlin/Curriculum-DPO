@@ -51,7 +51,7 @@ from data.dataset_factory import get_dataset
 from data.utils import Preprocess
 from config.args_lcm import get_config
 import safetensors
-
+from peft import PeftModel
 if is_wandb_available():
     import wandb
 
@@ -60,7 +60,23 @@ check_min_version("0.18.0.dev0")
 
 logger = get_logger(__name__)
 
+def get_module_kohya_state_dict_2(peft_dict, prefix: str, dtype: torch.dtype, adapter_name: str = "default"):
+    kohya_ss_state_dict = {}
+    for peft_key, weight in peft_dict.items():
+        # print(peft_key)
+        kohya_key = peft_key.replace("unet.base_model.model", prefix)
+        kohya_key = kohya_key.replace("base_model.model", prefix)
+        kohya_key = kohya_key.replace("lora_A", "lora_down")
+        kohya_key = kohya_key.replace("lora_B", "lora_up")
+        kohya_key = kohya_key.replace(".", "_", kohya_key.count(".") - 2)
+        kohya_ss_state_dict[kohya_key] = weight.to(dtype)
 
+        # # Set alpha parameter
+        if "lora_down" in kohya_key:
+            alpha_key = f'{kohya_key.split(".")[0]}.alpha'
+            kohya_ss_state_dict[alpha_key] = torch.tensor(8).to(dtype)
+
+    return kohya_ss_state_dict
 def get_module_kohya_state_dict(module, prefix: str, dtype: torch.dtype, adapter_name: str = "default"):
     kohya_ss_state_dict = {}
     for peft_key, weight in get_peft_model_state_dict(module, adapter_name=adapter_name).items():
@@ -98,9 +114,9 @@ def reinit_lora(model, new_rank, num_lora_layers):
     # exit()
     config = LoraConfig(
         r=new_rank, 
-        lora_alpha=new_rank,
-        lora_dropout=0.1,
-        target_modules= f'^((down|up|mid)_(blocks|block)\.({blocks_number}\.)?attentions\.\d+\.transformer_blocks\.0\.(attn1|attn2|ff\.net)\.to_(q|k|v|to_out\.0))|((down|up|mid)_(blocks|block)\.({blocks_number}\.).*conv1)|((down|up|mid)_(blocks|block)\.({blocks_number}\.).*conv2)|((down|up|mid)_(blocks|block)\.({blocks_number}\.).*(upsamplers\.0\.conv))|((down|up|mid)_(blocks|block)\.({blocks_number}\.).*(downsamplers\.0\.conv)).*$'
+        lora_alpha=16,
+        lora_dropout=0.,
+        target_modules= f'^((down|up|mid)_(blocks|block)\.({blocks_number}\.)?attentions\.\d+\.((proj_out)|(transformer_blocks\.0\.(attn1|attn2|ff\.net)\.((to_(q|k|v|to_out\.0))|(2)|(0.proj)))))|((down|up|mid)_(blocks|block)\.({blocks_number}\.)*.*conv1)|((down|up|mid)_(blocks|block)\.({blocks_number}\.)*.*conv2)|((down|up|mid)_(blocks|block)\.({blocks_number}\.).*(upsamplers\.0\.conv))|((down|up|mid)_(blocks|block)\.({blocks_number}\.).*(downsamplers\.0\.conv)).*$'
     )
     model = get_peft_model(model, config, adapter_name="dpo")
     # for name, param in model.named_parameters():
@@ -120,11 +136,14 @@ def log_validation(vae, unet, validation_prompts, args, accelerator, weight_dtyp
     
     pipeline = DiffusionPipeline.from_pretrained(args.pretrained_model, torch_dtype=torch.float16, safety_checker=None)
     lora_state_dict = get_module_kohya_state_dict(unet, "lora_unet", torch.float16, adapter_name='dpo')
-    
+    if args.resume_from_checkpoint:
+            pipeline.unet = UNet2DConditionModel.from_pretrained(args.resume_from_checkpoint)
     if not ref:
         pipeline.load_lora_weights(lora_state_dict, adapter_name='dpo')
         pipeline.set_adapters(["dpo"])
-        pipeline.fuse_lora()
+        pipeline.fuse_lora(adapter_names=["dpo"], lora_scale=1.0)
+        
+    # else:
     pipeline.unet = pipeline.unet.to(torch.float16)
     pipeline.scheduler = LCMScheduler.from_config(pipeline.scheduler.config)
     pipeline.set_progress_bar_config(disable=True)
@@ -429,17 +448,20 @@ def main(args):
     )
     args.unet_time_cond_proj_dim = time_cond_proj_dim
     unet = UNet2DConditionModel.from_pretrained(args.pretrained_model, subfolder='unet')
-
-    target_unet = UNet2DConditionModel.from_pretrained(args.pretrained_model, subfolder='unet')
-
     unet_ref = UNet2DConditionModel.from_pretrained(args.pretrained_model, subfolder='unet')
+    
+    if args.resume_from_checkpoint:
+        unet = UNet2DConditionModel.from_pretrained(args.resume_from_checkpoint)
+        unet_ref = UNet2DConditionModel.from_pretrained(args.resume_from_checkpoint)
     unet_ref.train()
     unet_ref.requires_grad_(False)
+    target_unet = UNet2DConditionModel.from_pretrained(args.pretrained_model, subfolder='unet')
+
+
     target_unet.train()
     target_unet.requires_grad_(False)
     
     unet.train()
-
     # Check that all trainable models are in full precision
     low_precision_error_string = (
         " Please make sure to always have all model weights in full float32 precision when starting training - even if"
@@ -472,7 +494,10 @@ def main(args):
     #     ],
     # )
     # unet = get_peft_model(unet, lora_config, adapter_name='dpo')
- 
+    # for name, param in unet.named_parameters():
+    #     if param.requires_grad:
+    #         print(name)
+    # exit()
     # unet.set_adapters(["dpo"])
     current_rank = args.lora_rank
     num_lora_blocks = args.num_lora_blocks
@@ -586,7 +611,7 @@ def main(args):
         shuffle=True,
         collate_fn=preprocessor.collate_fn,
         batch_size=args.train_batch_size,
-        num_workers=7, drop_last=True
+        num_workers=args.num_workers, drop_last=True
     )
     train_dataloader.num_batches = len(train_dataset) // args.train_batch_size
     compute_embeddings_fn = functools.partial(
@@ -646,28 +671,29 @@ def main(args):
 
     # Potentially load in the weights and states from a previous save
     if args.resume_from_checkpoint:
-        if args.resume_from_checkpoint != "latest":
-            path = os.path.basename(args.resume_from_checkpoint)
-        else:
-            # Get the most recent checkpoint
-            dirs = os.listdir(args.output_dir)
-            dirs = [d for d in dirs if d.startswith("checkpoint")]
-            dirs = sorted(dirs, key=lambda x: int(x.split("-")[1]))
-            path = dirs[-1] if len(dirs) > 0 else None
+        # if args.resume_from_checkpoint != "latest":
+        #     path = os.path.basename(args.resume_from_checkpoint)
+        # else:
+        #     # Get the most recent checkpoint
+        #     dirs = os.listdir(args.output_dir)
+        #     dirs = [d for d in dirs if d.startswith("checkpoint")]
+        #     dirs = sorted(dirs, key=lambda x: int(x.split("-")[1]))
+        #     path = dirs[-1] if len(dirs) > 0 else None
 
-        if path is None:
-            accelerator.print(
-                f"Checkpoint '{args.resume_from_checkpoint}' does not exist. Starting a new training run."
-            )
-            args.resume_from_checkpoint = None
-            initial_global_step = 0
-        else:
-            accelerator.print(f"Resuming from checkpoint {path}")
-            accelerator.load_state(os.path.join(args.output_dir, path))
-            global_step = int(path.split("-")[1])
+        # if path is None:
+        #     accelerator.print(
+        #         f"Checkpoint '{args.resume_from_checkpoint}' does not exist. Starting a new training run."
+        #     )
+        #     args.resume_from_checkpoint = None
+        #     initial_global_step = 0
+        # else:
+        #     accelerator.print(f"Resuming from checkpoint {path}")
+        #     accelerator.load_state(os.path.join(args.output_dir, path))
+        #     global_step = int(path.split("-")[1])
 
-            initial_global_step = global_step
-            first_epoch = global_step // num_update_steps_per_epoch
+        #     initial_global_step = global_step
+        #     first_epoch = global_step // num_update_steps_per_epoch
+        initial_global_step = 0
     else:
         initial_global_step = 0
 
@@ -680,7 +706,14 @@ def main(args):
     )
 
     for epoch in range(first_epoch, args.num_epochs):
-        for step, batch in enumerate(train_dataloader):
+        finished_dataloader = False
+        train_iter = iter(train_dataloader)
+        while not finished_dataloader:
+            try:
+                batch  = next(train_iter)
+            except StopIteration:
+                finished_dataloader = True
+                break
             with accelerator.accumulate(unet):
                 # Steps 20.4.4 - 20.4.12
                 model_pred_w, target_pred_w, target_ref_w, model_ref_pred_w, model_ref_pred_l, model_pred_l, target_pred_l, target_ref_l, index = process_single_batch(batch, teacher_unet, unet, unet_ref, unet_ref, accelerator, vae,
@@ -767,6 +800,7 @@ def main(args):
             if global_step % args.update_frequency==0:
                 train_dataloader.dataset.update_cl()
                 train_dataloader.num_batches = len(train_dataset) // args.train_batch_size
+                train_iter = iter(train_dataloader)
                 num_update_steps_per_epoch = math.ceil((train_dataloader.num_batches) / (args.gradient_accumulation_steps))
                 logger.info(f"Length train_dataloader:{len(train_dataloader)}, num_update_steps_per_epoch: {num_update_steps_per_epoch}, epoch:{epoch}")
                 if overrode_max_train_steps:
@@ -778,12 +812,13 @@ def main(args):
                 # Only show the progress bar once on each machine.
                 disable=not accelerator.is_local_main_process,
                         )
-                if current_rank < args.max_rank or num_lora_blocks<256:
+            if global_step % args.update_frequency_rank:
+                if current_rank < args.max_rank or num_lora_blocks<args.num_layers:
                         new_rank = min(current_rank*2, args.max_rank)
                         new_unet = UNet2DConditionModel.from_pretrained(
                                     args.pretrained_model, subfolder="unet"
                                 )
-                        num_lora_blocks=min(num_lora_blocks*2, 256)
+                        num_lora_blocks=min(num_lora_blocks*2, args.num_layers)
                         new_unet = reinit_lora(new_unet, new_rank, num_lora_blocks)
                         transfer_lora_weights(unet, new_unet, old_rank=current_rank, new_rank=new_rank, logger=logger)
                         new_optimizer = optimizer_class(

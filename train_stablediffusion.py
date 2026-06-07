@@ -417,7 +417,14 @@ def main():
         unet.train()
         train_loss = 0.0
         implicit_acc_accumulated = 0.0
-        for step, batch in enumerate(train_dataloader):
+        finished_dataloader = False
+        train_iter = iter(train_dataloader)
+        while not finished_dataloader:
+            try:
+                batch  = next(train_iter)
+            except StopIteration:
+                finished_dataloader = True
+                break
             start_time = time.time()
             with accelerator.accumulate(unet):
                 # Convert images to latent space
@@ -544,7 +551,7 @@ def main():
                             safe_serialization=True,
                         )
                         logger.info(f"Saved state to {save_path}")
-                        logger.info("Pretty sure saving/loading is fixed but proceed cautiously")
+                        
             if accelerator.is_main_process:
                 if global_step % args.validation_steps == 0:
                     # create pipeline
@@ -573,12 +580,14 @@ def main():
                     torch.cuda.empty_cache()
                 if global_step % args.update_frequency == 0 and global_step!=0:
                     train_dataloader.dataset.update_cl()
+                    print(f"Length dataloader {len(train_dataloader)}")
+                    train_iter = iter(train_dataloader)
                     num_update_steps_per_epoch = math.ceil(len(train_dataloader.dataset) / total_batch_size)
                     if overrode_max_train_steps:
                         args.max_train_steps = args.num_epochs * num_update_steps_per_epoch
                     
                     progress_bar = tqdm(range(0, args.max_train_steps), initial=global_step, disable=not accelerator.is_local_main_process)
-                    progress_bar.set_description("Steps")
+                    progress_bar.set_description(f"Steps, length dataloader {len(train_dataloader)}")
                     if current_rank < args.max_rank or num_lora_blocks<256:
                         new_rank = min(current_rank*2, args.max_rank)
                         new_unet = UNet2DConditionModel.from_pretrained(
@@ -615,10 +624,13 @@ def main():
 
             logs = {"step_loss": loss.detach().item(), "lr": lr_scheduler.get_last_lr()[0]}
             logs["implicit_acc"] = avg_acc
+            logs['length dataloader'] = len(train_dataloader)
+            logs['global step'] = global_step
             progress_bar.set_postfix(**logs)
-            if global_step >= args.max_train_steps:
+        if global_step >= args.max_train_steps:
                     train_dataloader.dataset.update_cl()
-                    logger.info(f"Length dataloader {len(train_dataloader)}")
+                    train_iter = iter(train_dataloader)
+                    print(f"Length dataloader {len(train_dataloader)}")
                     if current_rank < args.max_rank or num_lora_blocks<256:
                         new_rank = min(current_rank*2, args.max_rank)
                         new_unet = UNet2DConditionModel.from_pretrained(
@@ -656,14 +668,14 @@ def main():
                         args.max_train_steps = args.num_epochs * num_update_steps_per_epoch
                     # args.num_epochs = math.ceil(args.max_train_steps / num_update_steps_per_epoch)
                     progress_bar = tqdm(range(0, args.max_train_steps), initial=global_step, disable=not accelerator.is_local_main_process)
-                    progress_bar.set_description("Steps")
+                    progress_bar.set_description(f"Steps, length dataloader {len(train_dataloader)}")
 
                     logger.info(f"Max train steps {args.max_train_steps}")
                     logger.info(f"Global step {global_step}")
                     logger.info(f"Num epochs {args.num_epochs}")
-                    
-            if global_step >= args.max_train_steps:
-                    break
+         
+        if global_step >= args.max_train_steps:
+            break
             
 
    

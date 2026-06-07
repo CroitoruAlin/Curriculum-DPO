@@ -22,7 +22,7 @@ def main():
     config = get_config()
 
     pipeline = StableDiffusionPipeline.from_pretrained(config.pretrained_model, revision=config.revision, torch_dtype=torch.float16)
-    pipeline = pipeline.to("cuda")
+    # pipeline = pipeline.to("cuda")
     # disable safety checker
     pipeline.safety_checker = None
     if config.lora_ckpt is not None:
@@ -48,14 +48,15 @@ def main():
     all_prompts = get_prompts(config.dataset, config)
     print(f"Number of prompts: {len(all_prompts)}")
     batch_size=config.sample_batch_size
-
+    pipeline = pipeline.to("cuda")
     pipeline.unet.eval()
+    generator = torch.Generator("cuda").manual_seed(123456)
     def generate_images():
         for i in tqdm(range(0, config.no_generated_images_per_prompt)):
             for start_index in tqdm(range(0, len(all_prompts), batch_size)):
                 #################### SAMPLING ####################
                 prompts = all_prompts[start_index:start_index+batch_size]
-                images = pipeline(prompt=prompts, num_inference_steps=config.num_steps, output_type="pil", height=config.resolution, width=config.resolution).images
+                images = pipeline(prompt=prompts, num_inference_steps=config.num_steps, output_type="pil", height=config.resolution, width=config.resolution, generator=generator).images
                 for i, image in enumerate(images):
                     if not os.path.exists("result.png"):
                         image.save("result.png")
@@ -64,7 +65,7 @@ def main():
                          "prompt": Value("string")})
     dataset = Dataset.from_generator(generator = generate_images,
                                      features = features)
-    dataset_path = f"{config.save_path}/{config.dataset}/{config.subset}/sd/{config.reward_fn}"
+    dataset_path = f"{config.save_path}/{config.dataset}/{config.subset}/sd2.1_dpo_baseline/{config.reward_fn}"
     os.makedirs(dataset_path, exist_ok=True)
     dataset.save_to_disk(dataset_path)
 

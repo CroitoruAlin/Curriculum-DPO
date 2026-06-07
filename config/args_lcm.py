@@ -8,6 +8,7 @@ def get_config(argv=None):
     parser.add_argument("--no_chunks", type=int, default=6)
     parser.add_argument("--run_type", type=str, default="dpo")
     parser.add_argument("--update_frequency", type=int, default=100)
+    parser.add_argument("--update_frequency_rank", type=int, default=200)
     
     # ===== DPO parameters =====
     parser.add_argument("--beta", type=int, default=100)
@@ -21,10 +22,11 @@ def get_config(argv=None):
     parser.add_argument("--max_train_samples", type=int, default=1000000)
     parser.add_argument("--max_train_steps", type=int, default=10000)
     parser.add_argument("--prediction_type", type=str, default=None)
+    parser.add_argument("--num_workers", type=int, default=7)
     parser.add_argument("--snr_gamma", type=float, default=None)
-    parser.add_argument("--checkpointing_steps", type=int, default=2000)
-    parser.add_argument("--checkpoints_total_limit", type=int, default=5)
-    parser.add_argument("--validation_steps", type=int, default=1000)
+    parser.add_argument("--checkpointing_steps", type=int, default=1000)
+    parser.add_argument("--checkpoints_total_limit", type=int, default=20)
+    parser.add_argument("--validation_steps", type=int, default=500)
     parser.add_argument("--num_validation_images", type=int, default=10)
     parser.add_argument("--proportion_empty_prompts", type=float, default=0.25)
     parser.add_argument("--enable_xformers_memory_efficient_attention", type=bool, default=True)
@@ -54,13 +56,15 @@ def get_config(argv=None):
     parser.add_argument("--sample_batch_size", type=int, default=10)
 
      # ===== Training =====
-    parser.add_argument("--num_epochs", type=int, default=5)
+    parser.add_argument("--num_epochs", type=int, default=20)
     parser.add_argument("--huber_c",default = 0.001, type=float)
     # mixed precision training. options are "fp16", "bf16", and "no". half-precision speeds up training significantly.
     parser.add_argument("--mixed_precision", type=str, default="fp16")
     parser.add_argument("--allow_tf32", type=bool, default=True)
     parser.add_argument("--lora_rank", type=int, default=6)
+    parser.add_argument("--alpha", type=int, default=None)
     parser.add_argument("--max_rank", type=int, default=16)
+    parser.add_argument("--num_layers", type=int, default=256)
     parser.add_argument("--num_lora_blocks", type=int, default=2)
     # batch size (per GPU!) to use for training.
     parser.add_argument("--train_batch_size", type=int, default=8)
@@ -96,7 +100,7 @@ def get_config(argv=None):
     else:
         args = parser.parse_args()
     if args.subset=='train':
-        args.no_generated_images_per_prompt=100
+        args.no_generated_images_per_prompt=300
     else:
         args.no_generated_images_per_prompt=10
     args.tracker_project_name = args.wandb_run_name
