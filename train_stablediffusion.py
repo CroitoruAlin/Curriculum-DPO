@@ -419,7 +419,7 @@ def main():
         implicit_acc_accumulated = 0.0
         finished_dataloader = False
         train_iter = iter(train_dataloader)
-        while not finished_dataloader:
+        for step_in_epoch in range(len(train_dataloader)):
             try:
                 batch  = next(train_iter)
             except StopIteration:
@@ -551,8 +551,7 @@ def main():
                             safe_serialization=True,
                         )
                         logger.info(f"Saved state to {save_path}")
-                        
-            if accelerator.is_main_process:
+            if accelerator.is_main_process:          
                 if global_step % args.validation_steps == 0:
                     # create pipeline
                     pipeline = StableDiffusionPipeline.from_pretrained(
@@ -578,51 +577,56 @@ def main():
                     log_validation(pipeline, args, accelerator, prompts, model_type="unet_ref")
                     del pipeline
                     torch.cuda.empty_cache()
-                if global_step % args.update_frequency == 0 and global_step!=0:
-                    train_dataloader.dataset.update_cl()
-                    print(f"Length dataloader {len(train_dataloader)}")
-                    train_iter = iter(train_dataloader)
-                    num_update_steps_per_epoch = math.ceil(len(train_dataloader.dataset) / total_batch_size)
-                    if overrode_max_train_steps:
-                        args.max_train_steps = args.num_epochs * num_update_steps_per_epoch
-                    
-                    progress_bar = tqdm(range(0, args.max_train_steps), initial=global_step, disable=not accelerator.is_local_main_process)
-                    progress_bar.set_description(f"Steps, length dataloader {len(train_dataloader)}")
-                    if current_rank < args.max_rank or num_lora_blocks<256:
-                        new_rank = min(current_rank*2, args.max_rank)
-                        new_unet = UNet2DConditionModel.from_pretrained(
-                                    args.pretrained_model, subfolder="unet", revision=args.revision
+            if global_step % args.update_frequency == 0 and global_step!=0:
+                train_dataloader.dataset.update_cl()
+                print(f"Length dataloader {len(train_dataloader)}")
+                train_iter = iter(train_dataloader)
+                num_update_steps_per_epoch = math.ceil(len(train_dataloader.dataset) / total_batch_size)
+                if overrode_max_train_steps:
+                    args.max_train_steps = args.num_epochs * num_update_steps_per_epoch
+                
+                progress_bar = tqdm(range(0, args.max_train_steps), initial=global_step, disable=not accelerator.is_local_main_process)
+                progress_bar.set_description(f"Steps, length dataloader {len(train_dataloader)}")
+                if current_rank < args.max_rank or num_lora_blocks<256:
+                    new_rank = min(current_rank*2, args.max_rank)
+                    new_unet = UNet2DConditionModel.from_pretrained(
+                                args.pretrained_model, subfolder="unet", revision=args.revision
+                            )
+                    num_lora_blocks=min(num_lora_blocks*2, 256)
+                    new_unet = reinit_lora(new_unet, new_rank, num_lora_blocks)
+                    transfer_lora_weights(unet, new_unet, old_rank=current_rank, new_rank=new_rank, logger=logger)
+                    optimizer = torch.optim.AdamW(
+                                    new_unet.parameters(),
+                                    lr=args.learning_rate,
+                                    betas=(args.adam_beta1, args.adam_beta2),
+                                    weight_decay=args.adam_weight_decay,
+                                    eps=args.adam_epsilon,
                                 )
-                        num_lora_blocks=min(num_lora_blocks*2, 256)
-                        new_unet = reinit_lora(new_unet, new_rank, num_lora_blocks)
-                        transfer_lora_weights(unet, new_unet, old_rank=current_rank, new_rank=new_rank, logger=logger)
-                        optimizer = torch.optim.AdamW(
-                                        new_unet.parameters(),
-                                        lr=args.learning_rate,
-                                        betas=(args.adam_beta1, args.adam_beta2),
-                                        weight_decay=args.adam_weight_decay,
-                                        eps=args.adam_epsilon,
-                                    )
-                        unet = None
-                        del unet 
-                        torch.cuda.empty_cache()
-                        new_unet.to(accelerator.device, dtype=weight_dtype)
-                        if args.mixed_precision == "fp16":
-                            # only upcast trainable parameters (LoRA) into fp32
-                            cast_training_params(new_unet, dtype=torch.float32)
-                        
-                        if args.allow_tf32:
-                            torch.backends.cuda.matmul.allow_tf32 = True
-                        unet, optimizer = accelerator.prepare(
-                                                new_unet, optimizer
-                                            )
-                        lr_scheduler.optimizer = optimizer
-                        current_rank = new_rank
-                        
+                    unet = None
+                    del unet 
+                    torch.cuda.empty_cache()
+                    new_unet.to(accelerator.device, dtype=weight_dtype)
+                    if args.mixed_precision == "fp16":
+                        # only upcast trainable parameters (LoRA) into fp32
+                        cast_training_params(new_unet, dtype=torch.float32)
+                    
+                    if args.allow_tf32:
+                        torch.backends.cuda.matmul.allow_tf32 = True
+                    lr_scheduler = get_scheduler(
+                                    args.lr_scheduler,
+                                    optimizer=optimizer,
+                                    num_warmup_steps=args.lr_warmup_steps * accelerator.num_processes,
+                                    num_training_steps=args.max_train_steps * accelerator.num_processes,
+                                )
+                    unet, optimizer,lr_scheduler = accelerator.prepare(
+                                            new_unet, optimizer, lr_scheduler
+                                        ) 
+                    current_rank = new_rank
+                    
 
-                    # args.num_epochs = math.ceil(args.max_train_steps / num_update_steps_per_epoch)
+                # args.num_epochs = math.ceil(args.max_train_steps / num_update_steps_per_epoch)
 
-            logs = {"step_loss": loss.detach().item(), "lr": lr_scheduler.get_last_lr()[0]}
+            logs = {"step_loss": loss.detach().item(), "lr": lr_scheduler.get_last_lr()[0], "current_rank: ": current_rank}
             logs["implicit_acc"] = avg_acc
             logs['length dataloader'] = len(train_dataloader)
             logs['global step'] = global_step
@@ -656,10 +660,15 @@ def main():
                         
                         if args.allow_tf32:
                             torch.backends.cuda.matmul.allow_tf32 = True
-                        unet, optimizer = accelerator.prepare(
-                                                new_unet, optimizer
-                                            )
-                        lr_scheduler.optimizer = optimizer
+                        lr_scheduler = get_scheduler(
+                                        args.lr_scheduler,
+                                        optimizer=optimizer,
+                                        num_warmup_steps=args.lr_warmup_steps * accelerator.num_processes,
+                                        num_training_steps=args.max_train_steps * accelerator.num_processes,
+                                    )
+                        unet, optimizer, lr_scheduler = accelerator.prepare(
+                                                new_unet, optimizer, lr_scheduler
+                                            )       
                         current_rank = new_rank
 
 

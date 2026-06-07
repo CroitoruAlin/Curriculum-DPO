@@ -708,7 +708,7 @@ def main(args):
     for epoch in range(first_epoch, args.num_epochs):
         finished_dataloader = False
         train_iter = iter(train_dataloader)
-        while not finished_dataloader:
+        for step_in_epoch in range(len(train_dataloader)):
             try:
                 batch  = next(train_iter)
             except StopIteration:
@@ -840,10 +840,15 @@ def main(args):
                         
                         if args.allow_tf32:
                             torch.backends.cuda.matmul.allow_tf32 = True
-                        unet, optimizer = accelerator.prepare(
-                                                new_unet, new_optimizer
+                        lr_scheduler = get_scheduler(
+                                        args.lr_scheduler,
+                                        optimizer=new_optimizer,
+                                        num_warmup_steps=args.lr_warmup_steps,
+                                        num_training_steps=args.max_train_steps,
+                                    )
+                        unet, optimizer, lr_scheduler = accelerator.prepare(
+                                                new_unet, new_optimizer, lr_scheduler
                                             )
-                        lr_scheduler.optimizer = optimizer
                         current_rank = new_rank
             if global_step >= args.max_train_steps:
                 break
