@@ -31,6 +31,7 @@ def get_config(argv=None):
     
     # ===== Logging =====
     # run name for wandb logging and checkpoint saving -- if not provided, will be auto-generated based on the datetime.
+    parser.add_argument("--wandb_project_name", type=str, default="dpo_text_align_pickapic")
     parser.add_argument("--wandb_run_name", type=str, default="dpo_text_align_pickapic")
     # top-level logging directory for checkpoint saving.
     parser.add_argument("--logdir", type=str, default="logs")

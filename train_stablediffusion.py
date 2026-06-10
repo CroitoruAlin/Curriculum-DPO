@@ -389,7 +389,7 @@ def main():
     # The trackers initializes automatically on the main process.
     if accelerator.is_main_process:
         tracker_config = dict(vars(args))
-        accelerator.init_trackers(args.wandb_run_name, tracker_config,
+        accelerator.init_trackers(args.wandb_project_name, tracker_config,
         init_kwargs={
         "wandb": {
             "name": args.wandb_run_name,             
@@ -519,6 +519,14 @@ def main():
                 accelerator.backward(loss)
                 if accelerator.sync_gradients:
                     accelerator.clip_grad_norm_(unet.parameters(), args.max_grad_norm)
+                last_layer_grad_mag = 0.0
+                    
+                for name, param in unet.named_parameters():
+                    if param.requires_grad and param.grad is not None:
+                        # Calculate the L2 norm of the gradient
+                        last_layer_grad_mag = param.grad.detach().norm(2).item()
+                
+                accelerator.log({"last_layer_grad_mag": last_layer_grad_mag}, step=global_step)
                 optimizer.step()
                 lr_scheduler.step()
                 optimizer.zero_grad()
@@ -631,6 +639,8 @@ def main():
             logs['length dataloader'] = len(train_dataloader)
             logs['global step'] = global_step
             progress_bar.set_postfix(**logs)
+            if global_step >= args.max_train_steps:
+                break
         if global_step >= args.max_train_steps:
                     train_dataloader.dataset.update_cl()
                     train_iter = iter(train_dataloader)
