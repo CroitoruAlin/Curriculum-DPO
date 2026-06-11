@@ -60,6 +60,7 @@ def get_config(argv=None):
     parser.add_argument("--mixed_precision", type=str, default="fp16")
     parser.add_argument("--allow_tf32", type=bool, default=True)
     parser.add_argument("--lora_rank", type=int, default=8)
+    parser.add_argument("--lora_alpha", type=int, default=8)
     # batch size (per GPU!) to use for training.
     parser.add_argument("--train_batch_size", type=int, default=8)
     # learning rate.
@@ -82,7 +83,7 @@ def get_config(argv=None):
     parser.add_argument("--prompt", type=str, default="A red car")
     
     #===== Data set name =====
-    parser.add_argument("--dataset", type=str, default="drawbench", choices=['pickapic', 'drawbench', 'animals'],)
+    parser.add_argument("--dataset", type=str, default="drawbench", choices=['pickapic', 'drawbench', 'animals', "implicit_reward"],)
     parser.add_argument("--subset", type=str, default="test")
     parser.add_argument("--data_dir", type=str, default=None)
     parser.add_argument("--score_dir", type=str, default=None)

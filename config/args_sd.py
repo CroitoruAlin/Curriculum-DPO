@@ -73,9 +73,10 @@ def get_config(argv=None):
     parser.add_argument("--prompt_fn", type=str, default="nouns_activities")
     parser.add_argument("--reward_fn", type=str, default="llava_bertscore")
     parser.add_argument("--prompt", type=str, default="A red car")
+    parser.add_argument("--generate_negative_samples", action='store_true')
     
     #===== Data set name =====
-    parser.add_argument("--dataset", type=str, default="pickapic", choices=['pickapic', 'drawbench', 'animals'],)
+    parser.add_argument("--dataset", type=str, default="pickapic", choices=['pickapic', 'drawbench', 'animals', "implicit_reward"],)
     parser.add_argument("--subset", type=str, default="test", choices=['train', 'test'],)
     parser.add_argument("--data_dir", type=str, default=None)
     parser.add_argument("--score_dir", type=str, default=None)
@@ -86,10 +87,10 @@ def get_config(argv=None):
         args = parser.parse_args(argv[1:])
     else:
         args = parser.parse_args()
-    if args.subset=='train':
-        args.no_generated_images_per_prompt=500
-    else:
-        args.no_generated_images_per_prompt=10
+    # if args.subset=='train':
+    #     args.no_generated_images_per_prompt=500
+    # else:
+    #     args.no_generated_images_per_prompt=10
     args.tracker_project_name = args.run_name
     args.output_dir = f"experiments/{args.run_name}"
     return args

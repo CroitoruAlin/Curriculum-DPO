@@ -40,6 +40,8 @@ def score_ds(args):
     prompts = []
     dict_result = {"score":[]}
     dataset = load_from_disk(args.dataset_path).with_format('torch')
+    dataset = dataset.filter(lambda x: round(float(x), 1) == 0.0, input_columns=["mask_ratio"])
+    print(len(dataset))
     dataloader = DataLoader(dataset, batch_size=args.batch_size, num_workers=4, shuffle=False)
     for  entry in tqdm(dataloader):
             images = entry['image'] /255.
@@ -49,9 +51,9 @@ def score_ds(args):
                 dict_result["score"].append(score)
             images = []
             prompts = []
-    score_ds = Dataset.from_dict(dict_result)
-    os.makedirs(args.save_path, exist_ok=True)
-    score_ds.save_to_disk(args.save_path)
+    # score_ds = Dataset.from_dict(dict_result)
+    # os.makedirs(args.save_path, exist_ok=True)
+    # score_ds.save_to_disk(args.save_path)
         
     print("Average: ", np.mean(dict_result["score"]))
 
@@ -61,11 +63,16 @@ if __name__ =="__main__":
     
     parser.add_argument("--batch_size", type=int, default=10)
     parser.add_argument("--save_path", type=str, default="scores")
-    parser.add_argument("--dataset_path", type=str, default="datasets/drawbench/test/sd")
+    # parser.add_argument("--dataset_path", type=str, default="/mnt/home/fmi2/vladh/Curriculum-DPO/datasets/animals/test/sd/llava_bertscore") # Average:  5.440703
+    # parser.add_argument("--dataset_path", type=str, default="/mnt/home/fmi2/vladh/data/curr_dpo/datasets/animals/test/sd/llava_bertscore") # Average:  5.451755
+    
+    # parser.add_argument("--dataset_path", type=str, default="/mnt/home/fmi2/vladh/Curriculum-DPO/datasets/drawbench/test/sd/llava_bertscore") # Average:  5.4344845
+    parser.add_argument("--dataset_path", type=str, default="/mnt/home/fmi2/vladh/data/curr_dpo/datasets/drawbench/test/sd/llava_bertscore") # Average:  5.4297414
+    
     args = parser.parse_args()
-    if 'pickapic' in args.dataset_path:
-        score_paired_ds(args)
-    else:
-        score_ds(args)
+    # if 'pickapic' in args.dataset_path:
+    #     score_paired_ds(args)
+    # else:
+    score_ds(args)
     
 
