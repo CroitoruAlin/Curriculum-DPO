@@ -523,7 +523,6 @@ def main():
                     
                 for name, param in unet.named_parameters():
                     if param.requires_grad and param.grad is not None:
-                        # Calculate the L2 norm of the gradient
                         last_layer_grad_mag = param.grad.detach().norm(2).item()
                 
                 accelerator.log({"last_layer_grad_mag": last_layer_grad_mag}, step=global_step)
@@ -639,8 +638,8 @@ def main():
             logs['length dataloader'] = len(train_dataloader)
             logs['global step'] = global_step
             progress_bar.set_postfix(**logs)
-            if global_step >= args.max_train_steps:
-                break
+        if global_step >= args.max_train_steps:
+            break
         if global_step >= args.max_train_steps:
                     train_dataloader.dataset.update_cl()
                     train_iter = iter(train_dataloader)
