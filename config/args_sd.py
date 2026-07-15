@@ -12,6 +12,15 @@ def get_config(argv=None):
     # ===== DPO parameters =====
     parser.add_argument("--beta", type=int, default=200)
     parser.add_argument("--tracker_project_name", type=str, default=None)
+
+    # ===== Online Fast-Slow Chasing DPO (OFS-DPO) parameters =====
+    # weight of the intraspecific-competition term L_DPO-FS (Eq 3/4), paper ablates alpha in [0, 0.9]
+    parser.add_argument("--ofs_alpha", type=float, default=0.1)
+    # learning-rate multiplier of the slow module relative to the fast module's learning rate
+    parser.add_argument("--ofs_slow_lr_ratio", type=float, default=0.1)
+    # number of optimizer steps between re-evaluating which module (fast-lr vs slow-lr) currently
+    # holds the lower DPO loss and should therefore play the "F" (chasing target) role
+    parser.add_argument("--ofs_chasing_interval", type=int, default=50)
     
     # ===== Hyperparameters =====
     parser.add_argument("--resolution", type=int, default=512)
@@ -47,6 +56,8 @@ def get_config(argv=None):
     parser.add_argument("--eta", type=float, default=1.0)
     parser.add_argument("--guidance_scale", type=float, default=5.0)
     parser.add_argument("--sample_batch_size", type=int, default=50)
+    parser.add_argument("--save_unet_path", type=str, default=None)
+    parser.add_argument("--unet_path", type=str, default=None)
 
      # ===== Training =====
     parser.add_argument("--num_epochs", type=int, default=5)

@@ -140,10 +140,11 @@ def reinit_lora(model, new_rank, num_lora_layers):
         target_modules= f'^(down|up|mid)_(blocks|block)\.({blocks_number})?attentions\.\d+\.transformer_blocks\.0\.(attn1|attn2)\.to_(q|k|v|out\.0)$',
     )
     model = get_peft_model(model, config, adapter_name="dpo")
+    trained_modules = []
     for name, param in model.named_parameters():
         if param.requires_grad:
-            print(name)
-    # model.print_trainable_parameters()
+            trained_modules.append(name)
+    print(f"Trainable modules: {len(trained_modules)}")
     return model
 
 def main():
@@ -208,12 +209,12 @@ def main():
     logger.info("Loading text ref unet")
     # clone of model
     ref_unet = UNet2DConditionModel.from_pretrained(
-            args.pretrained_model,
+            args.pretrained_model if args.unet_path is None else args.unet_path,
             subfolder="unet", revision=args.revision
         )
     logger.info("Loading text unet")
     unet = UNet2DConditionModel.from_pretrained(
-        args.pretrained_model, subfolder="unet", revision=args.revision
+        args.pretrained_model if args.unet_path is None else args.unet_path, subfolder="unet", revision=args.revision
     )
 
     # Freeze vae, text_encoder(s), reference unet
@@ -559,7 +560,7 @@ def main():
                         )
                         logger.info(f"Saved state to {save_path}")
             if accelerator.is_main_process:          
-                if global_step % args.validation_steps == 0:
+                if global_step % args.validation_steps == 0 or global_step == 1:
                     # create pipeline
                     pipeline = StableDiffusionPipeline.from_pretrained(
                         args.pretrained_model,
@@ -597,7 +598,7 @@ def main():
                 if current_rank < args.max_rank or num_lora_blocks<256:
                     new_rank = min(current_rank*2, args.max_rank)
                     new_unet = UNet2DConditionModel.from_pretrained(
-                                args.pretrained_model, subfolder="unet", revision=args.revision
+                                args.pretrained_model if args.unet_path is None else args.unet_path, subfolder="unet", revision=args.revision
                             )
                     num_lora_blocks=min(num_lora_blocks*2, 256)
                     new_unet = reinit_lora(new_unet, new_rank, num_lora_blocks)
@@ -638,8 +639,8 @@ def main():
             logs['length dataloader'] = len(train_dataloader)
             logs['global step'] = global_step
             progress_bar.set_postfix(**logs)
-        if global_step >= args.max_train_steps:
-            break
+            if global_step >= args.max_train_steps:
+                break
         if global_step >= args.max_train_steps:
                     train_dataloader.dataset.update_cl()
                     train_iter = iter(train_dataloader)
@@ -647,7 +648,7 @@ def main():
                     if current_rank < args.max_rank or num_lora_blocks<256:
                         new_rank = min(current_rank*2, args.max_rank)
                         new_unet = UNet2DConditionModel.from_pretrained(
-                                    args.pretrained_model, subfolder="unet", revision=args.revision
+                                   args.pretrained_model if args.unet_path is None else args.unet_path, subfolder="unet", revision=args.revision
                                 )
                         num_lora_blocks=min(num_lora_blocks*2, 256)
                         new_unet = reinit_lora(new_unet, new_rank, num_lora_blocks)

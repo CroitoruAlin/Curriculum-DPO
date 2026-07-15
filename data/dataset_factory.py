@@ -39,6 +39,7 @@ class PromptsDataset(Dataset):
         score_images = np.array([score for score in self.scores['score']])
         if split is not None:
             self.dataset = self.dataset[split]
+        print(len(self.dataset), len(self.scores))
         self.dataset = self.dataset.add_column(name="score", column = [score for score in self.scores['score']])
         keep_threshold, threshold_per_sample = decide_threshold(reward)
         scores_filtering = np.array(self.dataset["score"])

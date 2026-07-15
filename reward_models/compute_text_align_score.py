@@ -39,7 +39,7 @@ def score_paired_ds(args):
 def score_ds(args):
     prompts = []
     dict_result = {"score":[]}
-    dataset = load_from_disk(args.dataset_path).shuffle().select(range(5000)).with_format('torch')
+    dataset = load_from_disk(args.dataset_path).with_format('torch')
     dataloader = DataLoader(dataset, batch_size=args.batch_size, num_workers=4, shuffle=False)
     for  entry in tqdm(dataloader):
             images = entry['image'] /255.
