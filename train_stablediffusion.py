@@ -48,12 +48,13 @@ from diffusers.optimization import get_scheduler
 from diffusers.utils import check_min_version, deprecate, is_wandb_available, make_image_grid, convert_state_dict_to_diffusers
 from diffusers.utils.import_utils import is_xformers_available
 from diffusers.training_utils import cast_training_params
-from peft import LoraConfig
+from peft import LoraConfig, get_peft_model
 from peft.utils import get_peft_model_state_dict
 from absl import app
 if is_wandb_available():
     import wandb
-
+import time
+import math
 def log_validation(
     pipeline,
     args,
@@ -114,6 +115,37 @@ def import_model_class_from_model_name_or_path(
     else:
         raise ValueError(f"{model_class} is not supported.")
 
+def transfer_lora_weights(old_model, new_model, old_rank, new_rank, logger):
+    logger.info("Transfering lora weights")
+    for name, module in new_model.named_modules():
+        if hasattr(module, "lora_A"):
+            old_A = getattr(old_model.get_submodule(name), "lora_A", None)
+            old_B = getattr(old_model.get_submodule(name), "lora_B", None)
+            # logger.info(type(module.lora_A))
+            if old_A is not None:
+                module.lora_A["dpo"].weight.data[:old_rank, :] = old_A["dpo"].weight.data
+                module.lora_B["dpo"].weight.data[:, :old_rank] = old_B["dpo"].weight.data
+    return new_model
+
+def reinit_lora(model, new_rank, num_lora_layers):
+    blocks_number = "|".join([str(i)+"\." for i in range(int(math.log2(num_lora_layers)))])
+    # for name, param in model.named_parameters():
+    #     print(name)
+    # exit()
+    print(blocks_number)
+    config = LoraConfig(
+        r=new_rank, 
+        lora_alpha=new_rank,
+        lora_dropout=0.1,
+        target_modules= f'^(down|up|mid)_(blocks|block)\.({blocks_number})?attentions\.\d+\.transformer_blocks\.0\.(attn1|attn2)\.to_(q|k|v|out\.0)$',
+    )
+    model = get_peft_model(model, config, adapter_name="dpo")
+    trained_modules = []
+    for name, param in model.named_parameters():
+        if param.requires_grad:
+            trained_modules.append(name)
+    print(f"Trainable modules: {len(trained_modules)}")
+    return model
 
 def main():
 
@@ -165,22 +197,24 @@ def main():
             args.pretrained_model, subfolder="tokenizer", revision=args.revision
         )
 
-    
+    logger.info("Loading text encoder")
     
     text_encoder = CLIPTextModel.from_pretrained(
                 args.pretrained_model, subfolder="text_encoder", revision=args.revision
             )
-
+    logger.info("Loading text vae")
     vae = AutoencoderKL.from_pretrained(
             args.pretrained_model, subfolder="vae", revision=args.revision
     )
+    logger.info("Loading text ref unet")
     # clone of model
     ref_unet = UNet2DConditionModel.from_pretrained(
-            args.pretrained_model,
+            args.pretrained_model if args.unet_path is None else args.unet_path,
             subfolder="unet", revision=args.revision
         )
+    logger.info("Loading text unet")
     unet = UNet2DConditionModel.from_pretrained(
-        args.pretrained_model, subfolder="unet", revision=args.revision
+        args.pretrained_model if args.unet_path is None else args.unet_path, subfolder="unet", revision=args.revision
     )
 
     # Freeze vae, text_encoder(s), reference unet
@@ -191,12 +225,6 @@ def main():
     for param in unet.parameters():
         param.requires_grad_(False)
 
-    unet_lora_config = LoraConfig(
-        r=args.lora_rank,
-        lora_alpha=args.lora_rank,
-        init_lora_weights="gaussian",
-        target_modules=["to_k", "to_q", "to_v", "to_out.0"],
-    )
     weight_dtype = torch.float32
     if accelerator.mixed_precision == "fp16":
         weight_dtype = torch.float16
@@ -206,9 +234,17 @@ def main():
     unet.to(accelerator.device, dtype=weight_dtype)
     vae.to(accelerator.device, dtype=weight_dtype)
     text_encoder.to(accelerator.device, dtype=weight_dtype)
-
-    # Add adapter and make sure the trainable params are in float32.
-    unet.add_adapter(unet_lora_config)
+    # for name, param in unet.named_parameters():
+    #     if 'to_out' in name:
+    #         print(name)
+    # exit()
+    current_rank = args.lora_rank
+    num_lora_blocks = args.num_lora_blocks
+    # print([n for n,_ in unet.named_modules() if "to_q" in n])
+    unet = reinit_lora(unet, current_rank, num_lora_blocks)
+    # for name, param in unet.named_parameters():
+    #     if param.requires_grad:
+    #         print(name)
     if args.mixed_precision == "fp16":
         # only upcast trainable parameters (LoRA) into fp32
         cast_training_params(unet, dtype=torch.float32)
@@ -227,8 +263,8 @@ def main():
             weight_decay=args.adam_weight_decay,
             eps=args.adam_epsilon,
         )
-
-    dataset = get_dataset(args)
+    logger.info("Loading data...")
+    dataset = get_dataset(args, logger)
 
     # Preprocessing the datasets.
     # We need to tokenize input captions and transform the images.
@@ -354,7 +390,11 @@ def main():
     # The trackers initializes automatically on the main process.
     if accelerator.is_main_process:
         tracker_config = dict(vars(args))
-        accelerator.init_trackers(args.run_name, tracker_config)
+        accelerator.init_trackers(args.wandb_project_name, tracker_config,
+        init_kwargs={
+        "wandb": {
+            "name": args.wandb_run_name,             
+        }})
 
     # Training initialization
     total_batch_size = args.train_batch_size * accelerator.num_processes * args.gradient_accumulation_steps
@@ -378,8 +418,15 @@ def main():
         unet.train()
         train_loss = 0.0
         implicit_acc_accumulated = 0.0
-        for step, batch in enumerate(train_dataloader):
-
+        finished_dataloader = False
+        train_iter = iter(train_dataloader)
+        for step_in_epoch in range(len(train_dataloader)):
+            try:
+                batch  = next(train_iter)
+            except StopIteration:
+                finished_dataloader = True
+                break
+            start_time = time.time()
             with accelerator.accumulate(unet):
                 # Convert images to latent space
                 # y_w and y_l were concatenated along channel dimension
@@ -473,10 +520,18 @@ def main():
                 accelerator.backward(loss)
                 if accelerator.sync_gradients:
                     accelerator.clip_grad_norm_(unet.parameters(), args.max_grad_norm)
+                last_layer_grad_mag = 0.0
+                    
+                for name, param in unet.named_parameters():
+                    if param.requires_grad and param.grad is not None:
+                        last_layer_grad_mag = param.grad.detach().norm(2).item()
+                
+                accelerator.log({"last_layer_grad_mag": last_layer_grad_mag}, step=global_step)
                 optimizer.step()
                 lr_scheduler.step()
                 optimizer.zero_grad()
-
+            end_time = time.time()
+            accelerator.log({"time_per_step": end_time-start_time}, step=global_step)
             # Checks if the accelerator has just performed an optimization step, if so do "end of batch" logging
             if accelerator.sync_gradients:
                 progress_bar.update(1)
@@ -492,10 +547,10 @@ def main():
                 if global_step % args.checkpointing_steps == 0:
                     if accelerator.is_main_process:
                         save_path = os.path.join(args.output_dir, f"checkpoint-{global_step}")
-                        accelerator.save_state(save_path)
+                        # accelerator.save_state(save_path)
                         unwrapped_unet = accelerator.unwrap_model(unet)
                         unet_lora_state_dict = convert_state_dict_to_diffusers(
-                            get_peft_model_state_dict(unwrapped_unet)
+                            get_peft_model_state_dict(unwrapped_unet, adapter_name="dpo")
                         )
 
                         StableDiffusionPipeline.save_lora_weights(
@@ -504,15 +559,16 @@ def main():
                             safe_serialization=True,
                         )
                         logger.info(f"Saved state to {save_path}")
-                        logger.info("Pretty sure saving/loading is fixed but proceed cautiously")
-            if accelerator.is_main_process:
-                if global_step % args.validation_steps == 0:
+            if accelerator.is_main_process:          
+                if global_step % args.validation_steps == 0 or global_step == 1:
                     # create pipeline
                     pipeline = StableDiffusionPipeline.from_pretrained(
                         args.pretrained_model,
                         unet=accelerator.unwrap_model(unet),
                         revision=args.revision,
                         torch_dtype=weight_dtype,
+                        requires_safety_checker=False,
+                        safety_checker=None
                     )
                     prompts = random.sample(dataset.usable_prompts, args.num_validation_images)
                     log_validation(pipeline, args, accelerator, prompts, model_type="unet")
@@ -523,40 +579,122 @@ def main():
                         unet=ref_unet,
                         revision=args.revision,
                         torch_dtype=weight_dtype,
+                        requires_safety_checker=False,
+                        safety_checker=None
                     )
                     log_validation(pipeline, args, accelerator, prompts, model_type="unet_ref")
                     del pipeline
                     torch.cuda.empty_cache()
-                if global_step % args.update_frequency == 0 and global_step!=0:
-                    train_dataloader.dataset.update_cl()
-                    num_update_steps_per_epoch = math.ceil(len(train_dataloader.dataset) / total_batch_size)
-                    if overrode_max_train_steps:
-                        args.max_train_steps = args.num_epochs * num_update_steps_per_epoch
+            if global_step % args.update_frequency == 0 and global_step!=0:
+                train_dataloader.dataset.update_cl()
+                print(f"Length dataloader {len(train_dataloader)}")
+                train_iter = iter(train_dataloader)
+                num_update_steps_per_epoch = math.ceil(len(train_dataloader.dataset) / total_batch_size)
+                if overrode_max_train_steps:
+                    args.max_train_steps = args.num_epochs * num_update_steps_per_epoch
+                
+                progress_bar = tqdm(range(0, args.max_train_steps), initial=global_step, disable=not accelerator.is_local_main_process)
+                progress_bar.set_description(f"Steps, length dataloader {len(train_dataloader)}")
+                if current_rank < args.max_rank or num_lora_blocks<256:
+                    new_rank = min(current_rank*2, args.max_rank)
+                    new_unet = UNet2DConditionModel.from_pretrained(
+                                args.pretrained_model if args.unet_path is None else args.unet_path, subfolder="unet", revision=args.revision
+                            )
+                    num_lora_blocks=min(num_lora_blocks*2, 256)
+                    new_unet = reinit_lora(new_unet, new_rank, num_lora_blocks)
+                    transfer_lora_weights(unet, new_unet, old_rank=current_rank, new_rank=new_rank, logger=logger)
+                    optimizer = torch.optim.AdamW(
+                                    new_unet.parameters(),
+                                    lr=args.learning_rate,
+                                    betas=(args.adam_beta1, args.adam_beta2),
+                                    weight_decay=args.adam_weight_decay,
+                                    eps=args.adam_epsilon,
+                                )
+                    unet = None
+                    del unet 
+                    torch.cuda.empty_cache()
+                    new_unet.to(accelerator.device, dtype=weight_dtype)
+                    if args.mixed_precision == "fp16":
+                        # only upcast trainable parameters (LoRA) into fp32
+                        cast_training_params(new_unet, dtype=torch.float32)
                     
-                    progress_bar = tqdm(range(0, args.max_train_steps), initial=global_step, disable=not accelerator.is_local_main_process)
-                    progress_bar.set_description("Steps")
+                    if args.allow_tf32:
+                        torch.backends.cuda.matmul.allow_tf32 = True
+                    lr_scheduler = get_scheduler(
+                                    args.lr_scheduler,
+                                    optimizer=optimizer,
+                                    num_warmup_steps=args.lr_warmup_steps * accelerator.num_processes,
+                                    num_training_steps=args.max_train_steps * accelerator.num_processes,
+                                )
+                    unet, optimizer,lr_scheduler = accelerator.prepare(
+                                            new_unet, optimizer, lr_scheduler
+                                        ) 
+                    current_rank = new_rank
+                    
 
-                    # args.num_epochs = math.ceil(args.max_train_steps / num_update_steps_per_epoch)
+                # args.num_epochs = math.ceil(args.max_train_steps / num_update_steps_per_epoch)
 
-            logs = {"step_loss": loss.detach().item(), "lr": lr_scheduler.get_last_lr()[0]}
+            logs = {"step_loss": loss.detach().item(), "lr": lr_scheduler.get_last_lr()[0], "current_rank: ": current_rank}
             logs["implicit_acc"] = avg_acc
+            logs['length dataloader'] = len(train_dataloader)
+            logs['global step'] = global_step
             progress_bar.set_postfix(**logs)
             if global_step >= args.max_train_steps:
+                break
+        if global_step >= args.max_train_steps:
                     train_dataloader.dataset.update_cl()
-                    logger.info(f"Length dataloader {len(train_dataloader)}")
+                    train_iter = iter(train_dataloader)
+                    print(f"Length dataloader {len(train_dataloader)}")
+                    if current_rank < args.max_rank or num_lora_blocks<256:
+                        new_rank = min(current_rank*2, args.max_rank)
+                        new_unet = UNet2DConditionModel.from_pretrained(
+                                   args.pretrained_model if args.unet_path is None else args.unet_path, subfolder="unet", revision=args.revision
+                                )
+                        num_lora_blocks=min(num_lora_blocks*2, 256)
+                        new_unet = reinit_lora(new_unet, new_rank, num_lora_blocks)
+                        transfer_lora_weights(unet, new_unet, old_rank=current_rank, new_rank=new_rank, logger=logger)
+                        optimizer = torch.optim.AdamW(
+                                        new_unet.parameters(),
+                                        lr=args.learning_rate,
+                                        betas=(args.adam_beta1, args.adam_beta2),
+                                        weight_decay=args.adam_weight_decay,
+                                        eps=args.adam_epsilon,
+                                    )
+                        unet = None
+                        del unet 
+                        torch.cuda.empty_cache()
+                        new_unet.to(accelerator.device, dtype=weight_dtype)
+                        if args.mixed_precision == "fp16":
+                            # only upcast trainable parameters (LoRA) into fp32
+                            cast_training_params(new_unet, dtype=torch.float32)
+                        
+                        if args.allow_tf32:
+                            torch.backends.cuda.matmul.allow_tf32 = True
+                        lr_scheduler = get_scheduler(
+                                        args.lr_scheduler,
+                                        optimizer=optimizer,
+                                        num_warmup_steps=args.lr_warmup_steps * accelerator.num_processes,
+                                        num_training_steps=args.max_train_steps * accelerator.num_processes,
+                                    )
+                        unet, optimizer, lr_scheduler = accelerator.prepare(
+                                                new_unet, optimizer, lr_scheduler
+                                            )       
+                        current_rank = new_rank
+
+
                     num_update_steps_per_epoch = math.ceil(len(train_dataloader.dataset) / total_batch_size)
                     if overrode_max_train_steps:
                         args.max_train_steps = args.num_epochs * num_update_steps_per_epoch
                     # args.num_epochs = math.ceil(args.max_train_steps / num_update_steps_per_epoch)
                     progress_bar = tqdm(range(0, args.max_train_steps), initial=global_step, disable=not accelerator.is_local_main_process)
-                    progress_bar.set_description("Steps")
+                    progress_bar.set_description(f"Steps, length dataloader {len(train_dataloader)}")
 
                     logger.info(f"Max train steps {args.max_train_steps}")
                     logger.info(f"Global step {global_step}")
                     logger.info(f"Num epochs {args.num_epochs}")
-                    
-            if global_step >= args.max_train_steps:
-                    break
+         
+        if global_step >= args.max_train_steps:
+            break
             
 
    
@@ -565,7 +703,7 @@ def main():
         save_path = os.path.join(args.output_dir, "last")
         unwrapped_unet = accelerator.unwrap_model(unet)
         unet_lora_state_dict = convert_state_dict_to_diffusers(
-                            get_peft_model_state_dict(unwrapped_unet)
+                            get_peft_model_state_dict(unwrapped_unet, adapter_name="dpo")
                         )
 
         StableDiffusionPipeline.save_lora_weights(

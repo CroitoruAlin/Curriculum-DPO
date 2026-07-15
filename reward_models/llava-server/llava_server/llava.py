@@ -60,7 +60,7 @@ def load_phi3():
 def load_llava(params_path):
     # load model
     disable_torch_init()
-    model_path="llava-v1.5-13b"
+    model_path="/home/fl488644/LLaVA-server//llava-v1.5-13b"
     model_name = get_model_name_from_path(model_path)
     tokenizer, model, image_processor, context_len = load_pretrained_model(model_path, None, model_name)
     # print(list([name for name,_ in model.named_parameters()]))
